@@ -1,0 +1,218 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prospetto Lezioni - Angelo Faro</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- React & Babel Standalone -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .tab-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo, useEffect } = React;
+
+        const Icon = ({ name, className = "h-5 w-5" }) => {
+            useEffect(() => {
+                if (window.lucide) {
+                    window.lucide.createIcons();
+                }
+            }, [name]);
+            return <i data-lucide={name} className={className}></i>;
+        };
+
+        const LessonStatus = {
+            COMPLETED: 'Completata',
+            IN_PROGRESS: 'In Corso',
+            SCHEDULED: 'Programmata'
+        };
+
+        const SYLLABUS_DATA = [
+            {
+                id: '1',
+                title: 'Fondamenti di C++ e Gestione della Memoria',
+                description: 'Sistemi di I/O (printf/scanf, concetto di stream), Tipologie di dato primitive, Funzioni, Puntatori (referenziazione e dereferenziazione), Gestione della memoria (Arrays, Heap/Stack, new/delete) e introduzione alle Struct.',
+                date: 'Domani, ore 17:00',
+                status: LessonStatus.SCHEDULED
+            }
+        ];
+
+        const Navbar = () => (
+            <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex justify-between h-16 items-center">
+                        <div className="flex items-center gap-2">
+                            <div className="bg-slate-900 p-2 rounded-lg">
+                                <Icon name="code-2" className="h-6 w-6 text-white" />
+                            </div>
+                            <span className="text-xl font-bold text-slate-900 tracking-tight">
+                                Prospetto <span className="text-indigo-600">Lezioni</span>
+                            </span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <div className="hidden md:flex flex-col items-end">
+                                <span className="text-sm font-medium text-slate-700">Studente: Salvo</span>
+                                <span className="text-xs text-slate-500">Percorso: Basi della programmazione c/c++</span>
+                            </div>
+                            <Icon name="user-circle" className="h-8 w-8 text-slate-400" />
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        );
+
+        const LessonCard = ({ lesson }) => {
+            const isCompleted = lesson.status === LessonStatus.COMPLETED;
+            const isInProgress = lesson.status === LessonStatus.IN_PROGRESS;
+            const isScheduled = lesson.status === LessonStatus.SCHEDULED;
+
+            return (
+                <div className={`bg-white border rounded-xl p-6 transition-all duration-300 animate-fade-in ${isScheduled ? 'border-dashed border-indigo-300 bg-indigo-50/20' : 'border-slate-200'}`}>
+                    <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                            {isCompleted ? <Icon name="check-circle-2" className="h-5 w-5 text-emerald-500" /> : 
+                             isInProgress ? <Icon name="clock" className="h-5 w-5 text-indigo-500" /> : 
+                             <Icon name="calendar" className="h-5 w-5 text-indigo-500" />}
+                            <div>
+                                <h3 className="text-lg font-bold text-slate-900">{lesson.title}</h3>
+                                <p className="text-sm text-slate-500 font-medium">{lesson.date}</p>
+                            </div>
+                        </div>
+                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                            isScheduled ? 'bg-indigo-100 text-indigo-700 border-indigo-200' : 'bg-slate-50 text-slate-500 border-slate-100'
+                        }`}>
+                            {lesson.status}
+                        </span>
+                    </div>
+                    <div className="text-slate-600 text-sm mb-4 leading-relaxed bg-white/50 p-4 rounded-lg border border-slate-100">
+                        <p className="font-bold text-slate-800 mb-2">Argomenti trattati:</p>
+                        {lesson.description}
+                    </div>
+                </div>
+            );
+        };
+
+        const Dashboard = () => {
+            const completedCount = SYLLABUS_DATA.filter(l => l.status === LessonStatus.COMPLETED).length;
+            
+            return (
+                <div className="space-y-6 animate-fade-in">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">Lezioni Erogate</p>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <span className="text-4xl font-bold text-slate-900">{completedCount}</span>
+                                    <span className="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-tight">
+                                        Inizio Percorso
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="bg-slate-50 p-4 rounded-2xl"><Icon name="layout-dashboard" className="h-8 w-8 text-slate-400" /></div>
+                        </div>
+                        <div className="bg-white p-6 rounded-2xl border border-indigo-200 shadow-sm shadow-indigo-100/50 flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">Prossimo Incontro</p>
+                                <p className="text-xl font-bold text-slate-900 mt-1">Domani, ore 17:00</p>
+                                <p className="text-xs text-indigo-600 font-bold uppercase tracking-wider mt-1 flex items-center gap-1">
+                                    <Icon name="zap" className="h-3 w-3" /> Fondamenti & Memoria
+                                </p>
+                            </div>
+                            <div className="bg-indigo-600 p-4 rounded-2xl shadow-lg shadow-indigo-200"><Icon name="calendar" className="h-8 w-8 text-white" /></div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative">
+                        <h2 className="text-lg font-bold text-slate-900 mb-8 flex items-center gap-2">
+                             Attività Mensile
+                        </h2>
+                        <div className="flex items-end gap-4 h-48 pt-4">
+                            {['Gen', 'Feb', 'Mar', 'Apr'].map((m, i) => (
+                                <div key={i} className="flex-1 flex flex-col items-center gap-2">
+                                    <div className="w-full bg-slate-100 rounded-t-lg relative group overflow-hidden" style={{height: '100%'}}>
+                                        <div className="absolute bottom-0 w-full rounded-t-lg bg-slate-200" style={{height: '4%'}}></div>
+                                    </div>
+                                    <span className="text-xs font-bold text-slate-400">{m}</span>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="mt-4 text-center">
+                            <p className="text-xs text-slate-400 italic">Il grafico si aggiornerà al completamento delle prime sessioni.</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [tab, setTab] = useState('dash');
+            
+            return (
+                <div className="min-h-screen pb-20">
+                    <Navbar />
+                    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                        <header className="mb-10">
+                            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Monitoraggio Formazione</h1>
+                            <p className="text-slate-500 mt-2 italic">Percorso di apprendimento C++ personalizzato per Salvo.</p>
+                        </header>
+
+                        <div className="flex bg-slate-200/50 p-1.5 rounded-2xl w-fit mb-10 border border-slate-200/50">
+                            <button 
+                                onClick={() => setTab('dash')} 
+                                className={`px-8 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 tab-transition ${tab === 'dash' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                            >
+                                <Icon name="list-checks" className="h-4 w-4" /> Dashboard
+                            </button>
+                            <button 
+                                onClick={() => setTab('syll')} 
+                                className={`px-8 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 tab-transition ${tab === 'syll' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                            >
+                                <Icon name="book-open" className="h-4 w-4" /> Piano Didattico
+                            </button>
+                        </div>
+
+                        {tab === 'dash' ? <Dashboard /> : (
+                            <div className="space-y-8 animate-fade-in">
+                                <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-5 flex gap-4 items-start shadow-sm shadow-indigo-100/50">
+                                    <Icon name="info" className="h-6 w-6 text-indigo-600 shrink-0 mt-0.5" />
+                                    <div>
+                                        <p className="text-sm font-bold text-indigo-900 uppercase">Programma Imminente</p>
+                                        <p className="text-sm text-indigo-700/80 mt-1 leading-relaxed">
+                                            Verranno analizzati i sistemi di input/output e la gestione dei puntatori. Questo modulo è fondamentale per comprendere come il C++ interagisce con l'hardware e la memoria.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1 gap-6 max-w-3xl">
+                                    {SYLLABUS_DATA.map(l => <LessonCard key={l.id} lesson={l} />)}
+                                </div>
+                            </div>
+                        )}
+                    </main>
+                    <footer className="text-center py-12 text-slate-400 text-xs border-t border-slate-100 mt-20 font-bold uppercase tracking-widest">
+                        Angelo Faro &copy; {new Date().getFullYear()} — Prospetto Lezioni
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
