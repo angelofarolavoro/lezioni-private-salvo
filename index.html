@@ -20,6 +20,12 @@
         .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .tab-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        pre { background-color: #1e293b; color: #f8fafc; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; font-size: 0.875rem; line-height: 1.5; }
+        code { font-family: 'Fira Code', 'Courier New', monospace; }
+        .code-comment { color: #94a3b8; }
+        .code-keyword { color: #f472b6; }
+        .code-type { color: #38bdf8; }
+        .code-string { color: #4ade80; }
     </style>
 </head>
 <body>
@@ -44,20 +50,28 @@
         };
 
         const SYLLABUS_DATA = [
+             {
+                id: 'prev-1',
+                title: 'Introduzione alla Programmazione e I/O',
+                description: 'Fondamenti di memoria, variabili come "scatole", tipi di dato (int, float, char, bool) e interazione base tramite cin/cout.',
+                date: '22 dicembre, ore 17:00',
+                status: LessonStatus.COMPLETED,
+                hasDetails: true
+            },
             {
                 id: '1',
                 title: 'Fondamenti di C++ e Gestione della Memoria',
                 description: 'Sistemi di I/O (printf/scanf, concetto di stream), Tipologie di dato primitive, Funzioni, Puntatori (referenziazione e dereferenziazione), Gestione della memoria (Arrays, Heap/Stack, new/delete) e introduzione alle Struct.',
-                date: '22 dicembre, ore 17:00',
+                date: 'Sabato 27 dicembre, ore 11:30',
                 status: LessonStatus.SCHEDULED
             }
         ];
 
-        const Navbar = () => (
+        const Navbar = ({ onHome }) => (
             <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 cursor-pointer" onClick={onHome}>
                             <div className="bg-slate-900 p-2 rounded-lg">
                                 <Icon name="code-2" className="h-6 w-6 text-white" />
                             </div>
@@ -77,9 +91,95 @@
             </nav>
         );
 
-        const LessonCard = ({ lesson }) => {
+        const CodeBlock = ({ title, code }) => (
+            <div className="mb-8">
+                <h4 className="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2 uppercase tracking-wider">
+                    <Icon name="file-code" className="h-4 w-4 text-indigo-500" /> {title}
+                </h4>
+                <pre><code>{code}</code></pre>
+            </div>
+        );
+
+        const LessonDetail = ({ onBack }) => {
+            return (
+                <div className="animate-fade-in max-w-4xl mx-auto">
+                    <button 
+                        onClick={onBack}
+                        className="flex items-center gap-2 text-indigo-600 font-semibold mb-8 hover:text-indigo-800 transition-colors"
+                    >
+                        <Icon name="arrow-left" className="h-4 w-4" /> Torna al Prospetto
+                    </button>
+
+                    <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm mb-10">
+                        <div className="bg-slate-900 p-8 text-white">
+                            <div className="flex items-center gap-3 mb-2">
+                                <span className="bg-emerald-500 text-[10px] font-black uppercase px-2 py-0.5 rounded">Sessione Archiviata</span>
+                                <span className="text-slate-400 text-sm">22 Dicembre</span>
+                            </div>
+                            <h2 className="text-3xl font-bold">Introduzione & Variabili</h2>
+                        </div>
+
+                        <div className="p-8 space-y-8">
+                            <section>
+                                <h3 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                                    <Icon name="book-open-check" className="h-5 w-5 text-indigo-500" /> Concetti Chiave
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="p-5 bg-slate-50 rounded-xl border border-slate-100">
+                                        <h4 className="font-bold text-slate-800 mb-2">Le "Scatole" della Memoria</h4>
+                                        <p className="text-sm text-slate-600 leading-relaxed">
+                                            Le variabili sono locazioni di memoria identificate da un nome simbolico. Immaginatele come <strong>box etichettati</strong> in cui il processore conserva temporaneamente i dati durante l'elaborazione.
+                                        </p>
+                                    </div>
+                                    <div className="p-5 bg-slate-50 rounded-xl border border-slate-100">
+                                        <h4 className="font-bold text-slate-800 mb-2">Tipi di Dati (Datatypes)</h4>
+                                        <p className="text-sm text-slate-600 leading-relaxed">
+                                            Abbiamo distinto i tipi in base all'occupazione in byte e alla natura del dato: <code>int</code> (interi), <code>float/double</code> (precisione decimale), <code>char</code> (caratteri ASCII) e <code>bool</code> (algebra booleana).
+                                        </p>
+                                    </div>
+                                    <div className="p-5 bg-slate-50 rounded-xl border border-slate-100">
+                                        <h4 className="font-bold text-slate-800 mb-2">Input/Output (I/O)</h4>
+                                        <p className="text-sm text-slate-600 leading-relaxed">
+                                            L'interazione avviene tramite <strong>stream</strong>: <code>cout</code> (Console Output) invia flussi di dati allo schermo, mentre <code>cin</code> (Console Input) cattura l'input da tastiera tramite l'operatore di estrazione <code>&gt;&gt;</code>.
+                                        </p>
+                                    </div>
+                                    <div className="p-5 bg-slate-50 rounded-xl border border-slate-100">
+                                        <h4 className="font-bold text-slate-800 mb-2">Logica di Assegnamento</h4>
+                                        <p className="text-sm text-slate-600 leading-relaxed">
+                                            L'operatore <code>=</code> non indica uguaglianza matematica, ma una <strong>scrittura in memoria</strong>: il valore a destra viene spostato nell'indirizzo di memoria associato alla variabile a sinistra.
+                                        </p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section>
+                                <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                                    <Icon name="code" className="h-5 w-5 text-indigo-500" /> Repository Codice C++
+                                </h3>
+                                
+                                <CodeBlock 
+                                    title="Esempio 1: Somma di Interi"
+                                    code={`#include <iostream>\nusing namespace std;\n\nint main() {\n    int numero1, numero2, somma;\n\n    cout << "Inserisci il primo numero intero: ";\n    cin >> numero1;\n\n    cout << "Inserisci il secondo numero intero: ";\n    cin >> numero2;\n\n    somma = numero1 + numero2;\n\n    cout << "La somma dei due numeri e': " << somma << endl;\n    return 0;\n}`}
+                                />
+
+                                <CodeBlock 
+                                    title="Esempio 2: Divisione e Casting"
+                                    code={`#include <iostream>\nusing namespace std;\n\nint main() {\n    int a, b;\n    float risultato;\n    \n    cout << "Numeratore: "; cin >> a;\n    cout << "Denominatore: "; cin >> b;\n\n    // Casting a float per evitare la divisione intera\n    risultato = (float)a / b; \n\n    cout << "Risultato: " << risultato << endl;\n    return 0;\n}`}
+                                />
+
+                                <CodeBlock 
+                                    title="Esempio 3: Calcolatrice con Controllo di Flusso"
+                                    code={`#include <iostream>\nusing namespace std;\n\nint main() {\n    double n1, n2, risultato;\n    char operazione;\n\n    cout << "Inserisci n1, operatore (+,-,*,/), n2: ";\n    cin >> n1 >> operazione >> n2;\n\n    if (operazione == '+') risultato = n1 + n2;\n    else if (operazione == '-') risultato = n1 - n2;\n    else if (operazione == '*') risultato = n1 * n2;\n    else if (operazione == '/') {\n        if (n2 == 0) { cout << "Errore: Divisione per zero!"; return 1; }\n        risultato = n1 / n2;\n    }\n    else { cout << "Operatore errato!"; return 1; }\n\n    cout << "Risultato: " << risultato << endl;\n    return 0;\n}`}
+                                />
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
+        const LessonCard = ({ lesson, onSeeDetails }) => {
             const isCompleted = lesson.status === LessonStatus.COMPLETED;
-            const isInProgress = lesson.status === LessonStatus.IN_PROGRESS;
             const isScheduled = lesson.status === LessonStatus.SCHEDULED;
 
             return (
@@ -87,7 +187,6 @@
                     <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-3">
                             {isCompleted ? <Icon name="check-circle-2" className="h-5 w-5 text-emerald-500" /> : 
-                             isInProgress ? <Icon name="clock" className="h-5 w-5 text-indigo-500" /> : 
                              <Icon name="calendar" className="h-5 w-5 text-indigo-500" />}
                             <div>
                                 <h3 className="text-lg font-bold text-slate-900">{lesson.title}</h3>
@@ -95,21 +194,29 @@
                             </div>
                         </div>
                         <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
-                            isScheduled ? 'bg-indigo-100 text-indigo-700 border-indigo-200' : 'bg-slate-50 text-slate-500 border-slate-100'
+                            isScheduled ? 'bg-indigo-100 text-indigo-700 border-indigo-200' : 'bg-emerald-50 text-emerald-600 border-emerald-100'
                         }`}>
                             {lesson.status}
                         </span>
                     </div>
                     <div className="text-slate-600 text-sm mb-4 leading-relaxed bg-white/50 p-4 rounded-lg border border-slate-100">
-                        <p className="font-bold text-slate-800 mb-2">Argomenti trattati:</p>
+                        <p className="font-bold text-slate-800 mb-2">Focus sessione:</p>
                         {lesson.description}
                     </div>
+                    {lesson.hasDetails && (
+                        <button 
+                            onClick={() => onSeeDetails(lesson)}
+                            className="w-full mt-2 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2"
+                        >
+                            <Icon name="external-link" className="h-4 w-4" /> Visualizza Dettagli & Codice
+                        </button>
+                    )}
                 </div>
             );
         };
 
         const Dashboard = () => {
-            const completedCount = SYLLABUS_DATA.filter(l => l.status === LessonStatus.COMPLETED).length;
+            const completedCount = 1; // Richiesto esplicitamente
             
             return (
                 <div className="space-y-6 animate-fade-in">
@@ -119,8 +226,8 @@
                                 <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">Lezioni Erogate</p>
                                 <div className="flex items-center gap-2 mt-1">
                                     <span className="text-4xl font-bold text-slate-900">{completedCount}</span>
-                                    <span className="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-tight">
-                                        Inizio Percorso
+                                    <span className="bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-tight">
+                                        Sessione Iniziale OK
                                     </span>
                                 </div>
                             </div>
@@ -129,9 +236,9 @@
                         <div className="bg-white p-6 rounded-2xl border border-indigo-200 shadow-sm shadow-indigo-100/50 flex items-center justify-between">
                             <div>
                                 <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">Prossimo Incontro</p>
-                                <p className="text-xl font-bold text-slate-900 mt-1">22 dicembre, ore 17:00</p>
+                                <p className="text-xl font-bold text-slate-900 mt-1">27 dicembre, ore 11:30</p>
                                 <p className="text-xs text-indigo-600 font-bold uppercase tracking-wider mt-1 flex items-center gap-1">
-                                    <Icon name="zap" className="h-3 w-3" /> Fondamenti & Memoria
+                                    <Icon name="clock-3" className="h-3 w-3" /> Sabato Mattina
                                 </p>
                             </div>
                             <div className="bg-indigo-600 p-4 rounded-2xl shadow-lg shadow-indigo-200"><Icon name="calendar" className="h-8 w-8 text-white" /></div>
@@ -140,20 +247,20 @@
 
                     <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative">
                         <h2 className="text-lg font-bold text-slate-900 mb-8 flex items-center gap-2">
-                             Attività Mensile
+                             Attività Formativa
                         </h2>
                         <div className="flex items-end gap-4 h-48 pt-4">
-                            {['Gen', 'Feb', 'Mar', 'Apr'].map((m, i) => (
+                            {['Dic', 'Gen', 'Feb', 'Mar'].map((m, i) => (
                                 <div key={i} className="flex-1 flex flex-col items-center gap-2">
                                     <div className="w-full bg-slate-100 rounded-t-lg relative group overflow-hidden" style={{height: '100%'}}>
-                                        <div className="absolute bottom-0 w-full rounded-t-lg bg-slate-200" style={{height: '4%'}}></div>
+                                        <div className="absolute bottom-0 w-full rounded-t-lg bg-indigo-500 transition-all duration-1000" style={{height: m === 'Dic' ? '15%' : '0%'}}></div>
                                     </div>
                                     <span className="text-xs font-bold text-slate-400">{m}</span>
                                 </div>
                             ))}
                         </div>
                         <div className="mt-4 text-center">
-                            <p className="text-xs text-slate-400 italic">Il grafico si aggiornerà al completamento delle prime sessioni.</p>
+                            <p className="text-xs text-slate-400">Progressione basata sulle ore di mentoring effettuate.</p>
                         </div>
                     </div>
                 </div>
@@ -162,46 +269,70 @@
 
         const App = () => {
             const [tab, setTab] = useState('dash');
+            const [view, setView] = useState('main'); // 'main' o 'detail'
             
+            const handleBack = () => {
+                setView('main');
+                setTab('syll');
+            };
+
+            const handleHome = () => {
+                setView('main');
+                setTab('dash');
+            };
+
             return (
                 <div className="min-h-screen pb-20">
-                    <Navbar />
+                    <Navbar onHome={handleHome} />
                     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-                        <header className="mb-10">
-                            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Monitoraggio Formazione</h1>
-                            <p className="text-slate-500 mt-2 italic">Percorso di apprendimento C++ personalizzato per Salvo.</p>
-                        </header>
+                        
+                        {view === 'detail' ? (
+                            <LessonDetail onBack={handleBack} />
+                        ) : (
+                            <>
+                                <header className="mb-10">
+                                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Monitoraggio Formazione</h1>
+                                    <p className="text-slate-500 mt-2 italic">Dashboard per Salvo • Corso Fondamenti C++</p>
+                                </header>
 
-                        <div className="flex bg-slate-200/50 p-1.5 rounded-2xl w-fit mb-10 border border-slate-200/50">
-                            <button 
-                                onClick={() => setTab('dash')} 
-                                className={`px-8 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 tab-transition ${tab === 'dash' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-                            >
-                                <Icon name="list-checks" className="h-4 w-4" /> Dashboard
-                            </button>
-                            <button 
-                                onClick={() => setTab('syll')} 
-                                className={`px-8 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 tab-transition ${tab === 'syll' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-                            >
-                                <Icon name="book-open" className="h-4 w-4" /> Piano Didattico
-                            </button>
-                        </div>
+                                <div className="flex bg-slate-200/50 p-1.5 rounded-2xl w-fit mb-10 border border-slate-200/50">
+                                    <button 
+                                        onClick={() => setTab('dash')} 
+                                        className={`px-8 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 tab-transition ${tab === 'dash' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                    >
+                                        <Icon name="list-checks" className="h-4 w-4" /> Dashboard
+                                    </button>
+                                    <button 
+                                        onClick={() => setTab('syll')} 
+                                        className={`px-8 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 tab-transition ${tab === 'syll' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                    >
+                                        <Icon name="book-open" className="h-4 w-4" /> Piano Didattico
+                                    </button>
+                                </div>
 
-                        {tab === 'dash' ? <Dashboard /> : (
-                            <div className="space-y-8 animate-fade-in">
-                                <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-5 flex gap-4 items-start shadow-sm shadow-indigo-100/50">
-                                    <Icon name="info" className="h-6 w-6 text-indigo-600 shrink-0 mt-0.5" />
-                                    <div>
-                                        <p className="text-sm font-bold text-indigo-900 uppercase">Programma Imminente</p>
-                                        <p className="text-sm text-indigo-700/80 mt-1 leading-relaxed">
-                                            Verranno analizzati i sistemi di input/output e la gestione dei puntatori. Questo modulo è fondamentale per comprendere come il C++ interagisce con l'hardware e la memoria.
-                                        </p>
+                                {tab === 'dash' ? <Dashboard /> : (
+                                    <div className="space-y-8 animate-fade-in">
+                                        <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-5 flex gap-4 items-start shadow-sm shadow-indigo-100/50">
+                                            <Icon name="info" className="h-6 w-6 text-indigo-600 shrink-0 mt-0.5" />
+                                            <div>
+                                                <p className="text-sm font-bold text-indigo-900 uppercase">Programma Prossima Sessione</p>
+                                                <p className="text-sm text-indigo-700/80 mt-1 leading-relaxed">
+                                                    Analizzeremo la gestione avanzata della memoria e i puntatori. Prepariamo le basi per le strutture dati complessi.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-1 gap-6 max-w-3xl">
+                                            {SYLLABUS_DATA.map(l => (
+                                                <LessonCard 
+                                                    key={l.id} 
+                                                    lesson={l} 
+                                                    onSeeDetails={() => setView('detail')} 
+                                                />
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="grid grid-cols-1 gap-6 max-w-3xl">
-                                    {SYLLABUS_DATA.map(l => <LessonCard key={l.id} lesson={l} />)}
-                                </div>
-                            </div>
+                                )}
+                            </>
                         )}
                     </main>
                     <footer className="text-center py-12 text-slate-400 text-xs border-t border-slate-100 mt-20 font-bold uppercase tracking-widest">
