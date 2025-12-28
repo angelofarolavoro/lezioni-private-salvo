@@ -8,7 +8,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <!-- React & Babel Standalone -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -16,63 +16,74 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
         .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .tab-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        pre { background-color: #1e293b; color: #f8fafc; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; font-size: 0.875rem; line-height: 1.5; }
-        code { font-family: 'Fira Code', 'Courier New', monospace; }
-        .code-comment { color: #94a3b8; }
-        .code-keyword { color: #f472b6; }
-        .code-type { color: #38bdf8; }
-        .code-string { color: #4ade80; }
+        pre { background-color: #0f172a; color: #f8fafc; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; font-size: 0.875rem; line-height: 1.6; position: relative; }
+        code { font-family: 'Fira Code', monospace; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
+        .lesson-card:hover { transform: translateY(-2px); transition: all 0.3s ease; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .table-fixed-header thead th { position: sticky; top: 0; background: #f8fafc; z-index: 10; }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useMemo, useEffect } = React;
+        const { useState, useEffect, useCallback } = React;
 
         const Icon = ({ name, className = "h-5 w-5" }) => {
             useEffect(() => {
-                if (window.lucide) {
-                    window.lucide.createIcons();
-                }
+                if (window.lucide) window.lucide.createIcons();
             }, [name]);
             return <i data-lucide={name} className={className}></i>;
         };
 
         const LessonStatus = {
             COMPLETED: 'Completata',
-            IN_PROGRESS: 'In Corso',
             SCHEDULED: 'Programmata'
         };
 
         const SYLLABUS_DATA = [
-             {
-                id: 'prev-1',
-                title: 'Introduzione alla Programmazione e I/O',
-                description: 'Fondamenti di memoria, variabili come "scatole", tipi di dato (int, float, char, bool) e interazione base tramite cin/cout.',
-                date: '22 dicembre, ore 17:00',
-                status: LessonStatus.COMPLETED,
-                hasDetails: true
+            {
+                id: 'next-1',
+                title: 'Iterazioni e Cicli (for, while)',
+                description: 'Introduzione ai cicli iterativi per automatizzare compiti ripetitivi. Differenze tra for, while e do-while.',
+                date: '30 Dicembre, ore 16:00',
+                status: LessonStatus.SCHEDULED,
+                timestamp: new Date('2024-12-30T16:00:00')
             },
             {
-                id: '1',
-                title: 'Fondamenti di C++ e Gestione della Memoria',
-                description: 'Sistemi di I/O (printf/scanf, concetto di stream), Tipologie di dato primitive, Funzioni, Puntatori (referenziazione e dereferenziazione), Gestione della memoria (Arrays, Heap/Stack, new/delete) e introduzione alle Struct.',
-                date: 'Sabato 27 dicembre, ore 11:30',
-                status: LessonStatus.SCHEDULED
+                id: 'dec-27',
+                title: 'Logica delle Decisioni e Booleani',
+                description: 'Guida all\'istruzione if, else e else-if. Comprensione della logica booleana e degli operatori di confronto.',
+                date: '27 Dicembre, ore 11:30',
+                status: LessonStatus.COMPLETED,
+                hasDetails: true,
+                timestamp: new Date('2024-12-27T11:30:00')
+            },
+            {
+                id: 'dec-22',
+                title: 'Introduzione alla Programmazione e I/O',
+                description: 'Fondamenti di memoria, variabili come "scatole", tipi di dato (int, float, char, bool) e interazione base tramite cin/cout.',
+                date: '22 Dicembre, ore 17:00',
+                status: LessonStatus.COMPLETED,
+                hasDetails: true,
+                timestamp: new Date('2024-12-22T17:00:00')
             }
         ];
 
         const Navbar = ({ onHome }) => (
-            <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
+            <nav className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
-                        <div className="flex items-center gap-2 cursor-pointer" onClick={onHome}>
-                            <div className="bg-slate-900 p-2 rounded-lg">
+                        <div className="flex items-center gap-3 cursor-pointer group" onClick={onHome}>
+                            <div className="bg-indigo-600 p-2 rounded-xl group-hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-100">
                                 <Icon name="code-2" className="h-6 w-6 text-white" />
                             </div>
                             <span className="text-xl font-bold text-slate-900 tracking-tight">
@@ -80,187 +91,302 @@
                             </span>
                         </div>
                         <div className="flex items-center gap-4">
-                            <div className="hidden md:flex flex-col items-end">
-                                <span className="text-sm font-medium text-slate-700">Studente: Salvo</span>
-                                <span className="text-xs text-slate-500">Percorso: Basi della programmazione c/c++</span>
+                            <div className="hidden sm:flex flex-col items-end">
+                                <span className="text-sm font-semibold text-slate-800">Studente: Salvo</span>
+                                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">C++ Fundamentals</span>
                             </div>
-                            <Icon name="user-circle" className="h-8 w-8 text-slate-400" />
+                            <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
+                                <Icon name="user" className="h-5 w-5 text-slate-500" />
+                            </div>
                         </div>
                     </div>
                 </div>
             </nav>
         );
 
-        const CodeBlock = ({ title, code }) => (
-            <div className="mb-8">
-                <h4 className="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2 uppercase tracking-wider">
-                    <Icon name="file-code" className="h-4 w-4 text-indigo-500" /> {title}
-                </h4>
-                <pre><code>{code}</code></pre>
+        const CodeBlock = ({ title, code }) => {
+            const [copied, setCopied] = useState(false);
+
+            const handleCopy = () => {
+                navigator.clipboard.writeText(code);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+            };
+
+            return (
+                <div className="mb-8 group">
+                    <div className="flex justify-between items-center mb-2 px-1">
+                        <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                            <Icon name="terminal" className="h-3 w-3" /> {title}
+                        </h4>
+                        <button 
+                            onClick={handleCopy}
+                            className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 transition-colors"
+                        >
+                            <Icon name={copied ? "check" : "copy"} className="h-3 w-3" />
+                            {copied ? "Copiato!" : "Copia"}
+                        </button>
+                    </div>
+                    <pre><code className="block whitespace-pre">{code}</code></pre>
+                </div>
+            );
+        };
+
+        const DetailDec22 = () => (
+            <div className="space-y-10">
+                <section>
+                    <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                        <Icon name="book-open" className="h-5 w-5 text-indigo-500" /> Concetti di Base
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                            <h4 className="font-bold text-slate-900 mb-2">Le "Scatole" della Memoria</h4>
+                            <p className="text-sm text-slate-600 leading-relaxed">
+                                Le variabili sono identificatori per porzioni di RAM. Immaginale come box etichettati dove il computer salva dati per usarli in seguito.
+                            </p>
+                        </div>
+                        <div className="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                            <h4 className="font-bold text-slate-900 mb-2">Tipi di Dati</h4>
+                            <p className="text-sm text-slate-600 leading-relaxed">
+                                <code>int</code> per interi, <code>float</code> per decimali, <code>char</code> per testi singoli e <code>bool</code> per stati vero/falso. Ogni tipo occupa uno spazio specifico in byte.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                        <Icon name="file-code-2" className="h-5 w-5 text-indigo-500" /> Codice della Lezione
+                    </h3>
+                    <CodeBlock 
+                        title="Somma di due numeri"
+                        code={`#include <iostream>\nusing namespace std;\n\nint main() {\n    int a, b, somma;\n    cout << "Primo numero: ";\n    cin >> a;\n    cout << "Secondo numero: ";\n    cin >> b;\n    somma = a + b;\n    cout << "Totale: " << somma << endl;\n    return 0;\n}`}
+                    />
+                </section>
             </div>
         );
 
-        const LessonDetail = ({ onBack }) => {
+        const DetailDec27 = () => (
+            <div className="space-y-12">
+                <section className="bg-indigo-50/50 p-8 rounded-3xl border border-indigo-100">
+                    <h3 className="text-2xl font-black text-indigo-900 mb-4 tracking-tight">Guida alla Logica delle Decisioni</h3>
+                    <p className="text-indigo-800/80 leading-relaxed text-lg">
+                        Programmare non significa solo fare calcoli matematici. La parte più importante è insegnare al computer a prendere decisioni. I computer eseguono ordini basati su condizioni precise.
+                    </p>
+                </section>
+
+                <div className="grid grid-cols-1 gap-10">
+                    <section>
+                        <h4 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <span className="bg-indigo-100 text-indigo-600 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black">1</span>
+                            Il blocco fondamentale: if
+                        </h4>
+                        <div className="grid md:grid-cols-2 gap-6 items-start">
+                            <div className="text-sm text-slate-600 leading-relaxed bg-white p-6 rounded-2xl border border-slate-200">
+                                L'<code>if</code> agisce come un portiere. Controlla una condizione:
+                                <ul className="list-disc ml-5 mt-3 space-y-1">
+                                    <li>Se la condizione è <strong>VERA</strong>, esegue il codice.</li>
+                                    <li>Se è <strong>FALSA</strong>, salta il blocco.</li>
+                                </ul>
+                            </div>
+                            <CodeBlock title="Sintassi IF" code={`if (condizione) {\n    // Codice eseguito SOLO se vero\n}`} />
+                        </div>
+                    </section>
+
+                    <section>
+                        <h4 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <span className="bg-indigo-100 text-indigo-600 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black">2</span>
+                            L'alternativa: else
+                        </h4>
+                        <div className="grid md:grid-cols-2 gap-6 items-start">
+                             <div className="text-sm text-slate-600 leading-relaxed bg-white p-6 rounded-2xl border border-slate-200">
+                                Quando la condizione è falsa, usiamo <code>else</code> ("altrimenti") per gestire lo scenario alternativo.
+                            </div>
+                            <CodeBlock title="Esempio Monete" code={`int monete = 5;\nif (monete >= 10) {\n    cout << "Acquistato!";\n} else {\n    cout << "Fondi insufficienti.";\n}`} />
+                        </div>
+                    </section>
+
+                    <section>
+                        <h4 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+                            <span className="bg-indigo-100 text-indigo-600 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black">3</span>
+                            Logica Booleana e Operatori
+                        </h4>
+                        <div className="overflow-hidden border border-slate-200 rounded-2xl shadow-sm">
+                            <table className="w-full text-left text-sm">
+                                <thead className="bg-slate-50 text-slate-500 font-bold uppercase text-[10px] tracking-widest">
+                                    <tr>
+                                        <th className="px-6 py-4">Simbolo</th>
+                                        <th className="px-6 py-4">Significato</th>
+                                        <th className="px-6 py-4">Esempio</th>
+                                        <th className="px-6 py-4">Risultato (x=5)</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100 bg-white">
+                                    {[
+                                        ['==', 'Uguale a', 'x == 5', 'true'],
+                                        ['!=', 'Diverso da', 'x != 5', 'false'],
+                                        ['<', 'Minore di', 'x < 10', 'true'],
+                                        ['>', 'Maggiore di', 'x > 10', 'false'],
+                                        ['<=', 'Minore o uguale', 'x <= 5', 'true'],
+                                        ['>=', 'Maggiore o uguale', 'x >= 5', 'true']
+                                    ].map(([sim, sig, ex, res], i) => (
+                                        <tr key={i} className="hover:bg-slate-50/50">
+                                            <td className="px-6 py-4 font-mono font-bold text-indigo-600">{sim}</td>
+                                            <td className="px-6 py-4">{sig}</td>
+                                            <td className="px-6 py-4 font-mono text-slate-500">{ex}</td>
+                                            <td className="px-6 py-4">
+                                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${res === 'true' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
+                                                    {res.toUpperCase()}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section>
+                        <h4 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+                            <span className="bg-indigo-100 text-indigo-600 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black">4</span>
+                            Operatori Logici (AND, OR, NOT)
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="p-6 bg-white border border-slate-200 rounded-2xl">
+                                <h5 className="font-bold text-indigo-600 mb-2 flex items-center gap-1">&& (AND)</h5>
+                                <p className="text-xs text-slate-500 leading-relaxed">Tutte le condizioni devono essere vere.</p>
+                                <div className="mt-3 text-[11px] font-mono text-slate-400">if (eta > 18 && patente == true)</div>
+                            </div>
+                            <div className="p-6 bg-white border border-slate-200 rounded-2xl">
+                                <h5 className="font-bold text-indigo-600 mb-2 flex items-center gap-1">|| (OR)</h5>
+                                <p className="text-xs text-slate-500 leading-relaxed">Basta che almeno una sia vera.</p>
+                                <div className="mt-3 text-[11px] font-mono text-slate-400">if (sabato || domenica)</div>
+                            </div>
+                            <div className="p-6 bg-white border border-slate-200 rounded-2xl">
+                                <h5 className="font-bold text-indigo-600 mb-2 flex items-center gap-1">! (NOT)</h5>
+                                <p className="text-xs text-slate-500 leading-relaxed">Ribalta il risultato (Vero -> Falso).</p>
+                                <div className="mt-3 text-[11px] font-mono text-slate-400">if (!piove) // Se non piove</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="bg-slate-900 text-slate-300 p-8 rounded-3xl">
+                         <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                            <Icon name="alert-triangle" className="text-amber-400 h-5 w-5" /> Attenzione all'Assegnamento
+                        </h4>
+                        <p className="text-sm mb-6">L'errore più comune dei principianti è confondere i simboli di uguaglianza:</p>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="border border-rose-500/30 bg-rose-500/10 p-4 rounded-xl">
+                                <div className="text-[10px] font-bold text-rose-400 uppercase mb-1">Errore</div>
+                                <code className="text-sm">if (x = 10)</code>
+                                <p className="text-[10px] mt-1 text-rose-300">Cambia x in 10 e risulta sempre vero.</p>
+                            </div>
+                            <div className="border border-emerald-500/30 bg-emerald-500/10 p-4 rounded-xl">
+                                <div className="text-[10px] font-bold text-emerald-400 uppercase mb-1">Corretto</div>
+                                <code className="text-sm">if (x == 10)</code>
+                                <p className="text-[10px] mt-1 text-emerald-300">Chiede: "x è uguale a 10?".</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        );
+
+        const LessonDetail = ({ id, onBack }) => {
             return (
-                <div className="animate-fade-in max-w-4xl mx-auto">
+                <div className="animate-fade-in max-w-5xl mx-auto pb-12">
                     <button 
                         onClick={onBack}
-                        className="flex items-center gap-2 text-indigo-600 font-semibold mb-8 hover:text-indigo-800 transition-colors"
+                        className="flex items-center gap-2 text-slate-500 font-bold mb-8 hover:text-indigo-600 transition-colors bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm"
                     >
-                        <Icon name="arrow-left" className="h-4 w-4" /> Torna al Prospetto
+                        <Icon name="chevron-left" className="h-4 w-4" /> Torna al Prospetto
                     </button>
 
-                    <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm mb-10">
-                        <div className="bg-slate-900 p-8 text-white">
-                            <div className="flex items-center gap-3 mb-2">
-                                <span className="bg-emerald-500 text-[10px] font-black uppercase px-2 py-0.5 rounded">Sessione Archiviata</span>
-                                <span className="text-slate-400 text-sm">22 Dicembre</span>
+                    <div className="bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-xl shadow-slate-200/50 mb-10">
+                        <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-10 text-white relative">
+                            <div className="absolute top-0 right-0 p-8 opacity-10">
+                                <Icon name="code-2" className="h-40 w-40" />
                             </div>
-                            <h2 className="text-3xl font-bold">Introduzione & Variabili</h2>
-                        </div>
-
-                        <div className="p-8 space-y-8">
-                            <section>
-                                <h3 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-                                    <Icon name="book-open-check" className="h-5 w-5 text-indigo-500" /> Concetti Chiave
-                                </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="p-5 bg-slate-50 rounded-xl border border-slate-100">
-                                        <h4 className="font-bold text-slate-800 mb-2">Le "Scatole" della Memoria</h4>
-                                        <p className="text-sm text-slate-600 leading-relaxed">
-                                            Le variabili sono locazioni di memoria identificate da un nome simbolico. Immaginatele come <strong>box etichettati</strong> in cui il processore conserva temporaneamente i dati durante l'elaborazione.
-                                        </p>
-                                    </div>
-                                    <div className="p-5 bg-slate-50 rounded-xl border border-slate-100">
-                                        <h4 className="font-bold text-slate-800 mb-2">Tipi di Dati (Datatypes)</h4>
-                                        <p className="text-sm text-slate-600 leading-relaxed">
-                                            Abbiamo distinto i tipi in base all'occupazione in byte e alla natura del dato: <code>int</code> (interi), <code>float/double</code> (precisione decimale), <code>char</code> (caratteri ASCII) e <code>bool</code> (algebra booleana).
-                                        </p>
-                                    </div>
-                                    <div className="p-5 bg-slate-50 rounded-xl border border-slate-100">
-                                        <h4 className="font-bold text-slate-800 mb-2">Input/Output (I/O)</h4>
-                                        <p className="text-sm text-slate-600 leading-relaxed">
-                                            L'interazione avviene tramite <strong>stream</strong>: <code>cout</code> (Console Output) invia flussi di dati allo schermo, mentre <code>cin</code> (Console Input) cattura l'input da tastiera tramite l'operatore di estrazione <code>&gt;&gt;</code>.
-                                        </p>
-                                    </div>
-                                    <div className="p-5 bg-slate-50 rounded-xl border border-slate-100">
-                                        <h4 className="font-bold text-slate-800 mb-2">Logica di Assegnamento</h4>
-                                        <p className="text-sm text-slate-600 leading-relaxed">
-                                            L'operatore <code>=</code> non indica uguaglianza matematica, ma una <strong>scrittura in memoria</strong>: il valore a destra viene spostato nell'indirizzo di memoria associato alla variabile a sinistra.
-                                        </p>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <section>
-                                <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                                    <Icon name="code" className="h-5 w-5 text-indigo-500" /> Repository Codice C++
-                                </h3>
-                                
-                                <CodeBlock 
-                                    title="Esempio 1: Somma di Interi"
-                                    code={`#include <iostream>\nusing namespace std;\n\nint main() {\n    int numero1, numero2, somma;\n\n    cout << "Inserisci il primo numero intero: ";\n    cin >> numero1;\n\n    cout << "Inserisci il secondo numero intero: ";\n    cin >> numero2;\n\n    somma = numero1 + numero2;\n\n    cout << "La somma dei due numeri e': " << somma << endl;\n    return 0;\n}`}
-                                />
-
-                                <CodeBlock 
-                                    title="Esempio 2: Divisione e Casting"
-                                    code={`#include <iostream>\nusing namespace std;\n\nint main() {\n    int a, b;\n    float risultato;\n    \n    cout << "Numeratore: "; cin >> a;\n    cout << "Denominatore: "; cin >> b;\n\n    // Casting a float per evitare la divisione intera\n    risultato = (float)a / b; \n\n    cout << "Risultato: " << risultato << endl;\n    return 0;\n}`}
-                                />
-
-                                <CodeBlock 
-                                    title="Esempio 3: Calcolatrice con Controllo di Flusso"
-                                    code={`#include <iostream>\nusing namespace std;\n\nint main() {\n    double n1, n2, risultato;\n    char operazione;\n\n    cout << "Inserisci n1, operatore (+,-,*,/), n2: ";\n    cin >> n1 >> operazione >> n2;\n\n    if (operazione == '+') risultato = n1 + n2;\n    else if (operazione == '-') risultato = n1 - n2;\n    else if (operazione == '*') risultato = n1 * n2;\n    else if (operazione == '/') {\n        if (n2 == 0) { cout << "Errore: Divisione per zero!"; return 1; }\n        risultato = n1 / n2;\n    }\n    else { cout << "Operatore errato!"; return 1; }\n\n    cout << "Risultato: " << risultato << endl;\n    return 0;\n}`}
-                                />
-                            </section>
-                        </div>
-                    </div>
-                </div>
-            )
-        }
-
-        const LessonCard = ({ lesson, onSeeDetails }) => {
-            const isCompleted = lesson.status === LessonStatus.COMPLETED;
-            const isScheduled = lesson.status === LessonStatus.SCHEDULED;
-
-            return (
-                <div className={`bg-white border rounded-xl p-6 transition-all duration-300 animate-fade-in ${isScheduled ? 'border-dashed border-indigo-300 bg-indigo-50/20' : 'border-slate-200'}`}>
-                    <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                            {isCompleted ? <Icon name="check-circle-2" className="h-5 w-5 text-emerald-500" /> : 
-                             <Icon name="calendar" className="h-5 w-5 text-indigo-500" />}
-                            <div>
-                                <h3 className="text-lg font-bold text-slate-900">{lesson.title}</h3>
-                                <p className="text-sm text-slate-500 font-medium">{lesson.date}</p>
+                            <div className="flex items-center gap-3 mb-4">
+                                <span className="bg-indigo-500 text-[10px] font-black uppercase px-2.5 py-1 rounded-md tracking-wider">Sessione Completa</span>
+                                <span className="text-slate-400 text-sm font-medium">{id === 'dec-27' ? '27 Dicembre' : '22 Dicembre'}</span>
                             </div>
+                            <h2 className="text-4xl font-black tracking-tight max-w-2xl leading-tight">
+                                {id === 'dec-27' ? 'Logica delle Decisioni in C++: if, else e Booleani' : 'Introduzione alla Programmazione e I/O'}
+                            </h2>
                         </div>
-                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
-                            isScheduled ? 'bg-indigo-100 text-indigo-700 border-indigo-200' : 'bg-emerald-50 text-emerald-600 border-emerald-100'
-                        }`}>
-                            {lesson.status}
-                        </span>
+
+                        <div className="p-10">
+                            {id === 'dec-27' ? <DetailDec27 /> : <DetailDec22 />}
+                        </div>
                     </div>
-                    <div className="text-slate-600 text-sm mb-4 leading-relaxed bg-white/50 p-4 rounded-lg border border-slate-100">
-                        <p className="font-bold text-slate-800 mb-2">Focus sessione:</p>
-                        {lesson.description}
-                    </div>
-                    {lesson.hasDetails && (
-                        <button 
-                            onClick={() => onSeeDetails(lesson)}
-                            className="w-full mt-2 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2"
-                        >
-                            <Icon name="external-link" className="h-4 w-4" /> Visualizza Dettagli & Codice
-                        </button>
-                    )}
                 </div>
             );
         };
 
         const Dashboard = () => {
-            const completedCount = 1; // Richiesto esplicitamente
-            
+            const completedCount = SYLLABUS_DATA.filter(l => l.status === LessonStatus.COMPLETED).length;
+            const nextLesson = SYLLABUS_DATA.find(l => l.status === LessonStatus.SCHEDULED);
+
             return (
-                <div className="space-y-6 animate-fade-in">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">Lezioni Erogate</p>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-4xl font-bold text-slate-900">{completedCount}</span>
-                                    <span className="bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-tight">
-                                        Sessione Iniziale OK
-                                    </span>
-                                </div>
+                <div className="space-y-8 animate-fade-in">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-110 transition-transform">
+                                <Icon name="graduation-cap" className="h-24 w-24" />
                             </div>
-                            <div className="bg-slate-50 p-4 rounded-2xl"><Icon name="layout-dashboard" className="h-8 w-8 text-slate-400" /></div>
-                        </div>
-                        <div className="bg-white p-6 rounded-2xl border border-indigo-200 shadow-sm shadow-indigo-100/50 flex items-center justify-between">
                             <div>
-                                <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">Prossimo Incontro</p>
-                                <p className="text-xl font-bold text-slate-900 mt-1">27 dicembre, ore 11:30</p>
-                                <p className="text-xs text-indigo-600 font-bold uppercase tracking-wider mt-1 flex items-center gap-1">
-                                    <Icon name="clock-3" className="h-3 w-3" /> Sabato Mattina
+                                <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Lezioni Erogate</p>
+                                <span className="text-6xl font-black text-slate-900">{completedCount}</span>
+                            </div>
+                            <div className="mt-4">
+                                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                    <div className="bg-indigo-600 h-full rounded-full" style={{width: '20%'}}></div>
+                                </div>
+                                <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-wider">Obiettivo: Fondamenti C++</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-indigo-600 p-8 rounded-[2rem] shadow-xl shadow-indigo-200 flex flex-col justify-between relative overflow-hidden group lg:col-span-2">
+                             <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:rotate-12 transition-transform">
+                                <Icon name="calendar" className="h-32 w-32 text-white" />
+                            </div>
+                            <div>
+                                <p className="text-xs font-black text-indigo-200 uppercase tracking-[0.2em] mb-2">Prossimo Incontro</p>
+                                <h3 className="text-3xl font-black text-white tracking-tight">{nextLesson?.date}</h3>
+                                <p className="text-indigo-100 mt-2 text-sm font-medium flex items-center gap-2">
+                                    <Icon name="book" className="h-4 w-4" /> {nextLesson?.title}
                                 </p>
                             </div>
-                            <div className="bg-indigo-600 p-4 rounded-2xl shadow-lg shadow-indigo-200"><Icon name="calendar" className="h-8 w-8 text-white" /></div>
+                            <div className="mt-6 flex gap-3">
+                                <span className="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-bold text-white uppercase tracking-wider">30 DIC</span>
+                                <span className="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-bold text-white uppercase tracking-wider">16:00</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative">
-                        <h2 className="text-lg font-bold text-slate-900 mb-8 flex items-center gap-2">
-                             Attività Formativa
-                        </h2>
-                        <div className="flex items-end gap-4 h-48 pt-4">
-                            {['Dic', 'Gen', 'Feb', 'Mar'].map((m, i) => (
-                                <div key={i} className="flex-1 flex flex-col items-center gap-2">
-                                    <div className="w-full bg-slate-100 rounded-t-lg relative group overflow-hidden" style={{height: '100%'}}>
-                                        <div className="absolute bottom-0 w-full rounded-t-lg bg-indigo-500 transition-all duration-1000" style={{height: m === 'Dic' ? '15%' : '0%'}}></div>
+                    <div className="bg-white p-10 rounded-[2rem] border border-slate-200 shadow-sm relative group">
+                        <div className="flex justify-between items-center mb-10">
+                            <div>
+                                <h2 className="text-xl font-black text-slate-900 tracking-tight">Focus Attività</h2>
+                                <p className="text-xs text-slate-400 font-bold uppercase mt-1">Stato avanzamento mensile</p>
+                            </div>
+                            <div className="bg-slate-50 px-4 py-2 rounded-xl border border-slate-100 flex items-center gap-2">
+                                <div className="h-2 w-2 rounded-full bg-indigo-500 animate-pulse"></div>
+                                <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Live Updates</span>
+                            </div>
+                        </div>
+                        <div className="flex items-end gap-6 h-48">
+                            {['Ott', 'Nov', 'Dic', 'Gen'].map((m, i) => (
+                                <div key={i} className="flex-1 flex flex-col items-center gap-4">
+                                    <div className="w-full bg-slate-100 rounded-2xl relative group/bar h-full overflow-hidden">
+                                        <div 
+                                            className={`absolute bottom-0 w-full rounded-2xl transition-all duration-1000 ${m === 'Dic' ? 'bg-indigo-500' : 'bg-slate-200'}`} 
+                                            style={{height: m === 'Dic' ? '35%' : '5%'}}
+                                        ></div>
                                     </div>
-                                    <span className="text-xs font-bold text-slate-400">{m}</span>
+                                    <span className={`text-[10px] font-black uppercase tracking-widest ${m === 'Dic' ? 'text-indigo-600' : 'text-slate-400'}`}>{m}</span>
                                 </div>
                             ))}
-                        </div>
-                        <div className="mt-4 text-center">
-                            <p className="text-xs text-slate-400">Progressione basata sulle ore di mentoring effettuate.</p>
                         </div>
                     </div>
                 </div>
@@ -269,7 +395,8 @@
 
         const App = () => {
             const [tab, setTab] = useState('dash');
-            const [view, setView] = useState('main'); // 'main' o 'detail'
+            const [view, setView] = useState('main'); // 'main' or 'detail'
+            const [selectedId, setSelectedId] = useState(null);
             
             const handleBack = () => {
                 setView('main');
@@ -279,55 +406,99 @@
             const handleHome = () => {
                 setView('main');
                 setTab('dash');
+                setSelectedId(null);
             };
 
+            const handleSeeDetails = (id) => {
+                setSelectedId(id);
+                setView('detail');
+            };
+
+            const sortedSyllabus = [...SYLLABUS_DATA].sort((a, b) => b.timestamp - a.timestamp);
+
             return (
-                <div className="min-h-screen pb-20">
+                <div className="min-h-screen flex flex-col">
                     <Navbar onHome={handleHome} />
-                    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                    <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
                         
                         {view === 'detail' ? (
-                            <LessonDetail onBack={handleBack} />
+                            <LessonDetail id={selectedId} onBack={handleBack} />
                         ) : (
                             <>
-                                <header className="mb-10">
-                                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Monitoraggio Formazione</h1>
-                                    <p className="text-slate-500 mt-2 italic">Dashboard per Salvo • Corso Fondamenti C++</p>
+                                <header className="mb-12">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="h-px w-8 bg-indigo-600"></div>
+                                        <span className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em]">C++ Developer Path</span>
+                                    </div>
+                                    <h1 className="text-4xl font-black text-slate-900 tracking-tight">Monitoraggio Formazione</h1>
+                                    <p className="text-slate-400 mt-2 font-medium italic">Dashboard didattica personalizzata per lo studente Salvo.</p>
                                 </header>
 
-                                <div className="flex bg-slate-200/50 p-1.5 rounded-2xl w-fit mb-10 border border-slate-200/50">
+                                <div className="flex bg-slate-100 p-1.5 rounded-2xl w-fit mb-12 border border-slate-200">
                                     <button 
                                         onClick={() => setTab('dash')} 
-                                        className={`px-8 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 tab-transition ${tab === 'dash' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                        className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 tab-transition ${tab === 'dash' ? 'bg-white text-indigo-600 shadow-md ring-1 ring-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
                                     >
-                                        <Icon name="list-checks" className="h-4 w-4" /> Dashboard
+                                        <Icon name="grid" className="h-4 w-4" /> Dashboard
                                     </button>
                                     <button 
                                         onClick={() => setTab('syll')} 
-                                        className={`px-8 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 tab-transition ${tab === 'syll' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                        className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 tab-transition ${tab === 'syll' ? 'bg-white text-indigo-600 shadow-md ring-1 ring-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
                                     >
-                                        <Icon name="book-open" className="h-4 w-4" /> Piano Didattico
+                                        <Icon name="list" className="h-4 w-4" /> Piano Didattico
                                     </button>
                                 </div>
 
                                 {tab === 'dash' ? <Dashboard /> : (
-                                    <div className="space-y-8 animate-fade-in">
-                                        <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-5 flex gap-4 items-start shadow-sm shadow-indigo-100/50">
-                                            <Icon name="info" className="h-6 w-6 text-indigo-600 shrink-0 mt-0.5" />
-                                            <div>
-                                                <p className="text-sm font-bold text-indigo-900 uppercase">Programma Prossima Sessione</p>
-                                                <p className="text-sm text-indigo-700/80 mt-1 leading-relaxed">
-                                                    Analizzeremo la gestione avanzata della memoria e i puntatori. Prepariamo le basi per le strutture dati complessi.
+                                    <div className="space-y-10 animate-fade-in max-w-4xl">
+                                        <div className="bg-indigo-600 rounded-[2rem] p-8 flex flex-col md:flex-row gap-6 items-center shadow-xl shadow-indigo-100">
+                                            <div className="bg-white/10 p-4 rounded-2xl">
+                                                <Icon name="zap" className="h-8 w-8 text-white" />
+                                            </div>
+                                            <div className="text-center md:text-left">
+                                                <p className="text-xs font-bold text-indigo-100 uppercase tracking-widest">In Corso d'opera</p>
+                                                <p className="text-white font-medium mt-1 leading-relaxed">
+                                                    Stiamo consolidando la logica di controllo. La prossima sessione introdurrà i <strong>cicli</strong>, lo strumento definitivo per la scalabilità del codice.
                                                 </p>
                                             </div>
                                         </div>
-                                        <div className="grid grid-cols-1 gap-6 max-w-3xl">
-                                            {SYLLABUS_DATA.map(l => (
-                                                <LessonCard 
+
+                                        <div className="grid grid-cols-1 gap-6">
+                                            {sortedSyllabus.map(l => (
+                                                <div 
                                                     key={l.id} 
-                                                    lesson={l} 
-                                                    onSeeDetails={() => setView('detail')} 
-                                                />
+                                                    className={`lesson-card bg-white border rounded-[1.5rem] p-8 transition-all duration-300 shadow-sm ${l.status === LessonStatus.SCHEDULED ? 'border-dashed border-indigo-300 bg-indigo-50/20' : 'border-slate-200'}`}
+                                                >
+                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                                                        <div className="flex items-center gap-4">
+                                                            <div className={`p-3 rounded-xl ${l.status === LessonStatus.COMPLETED ? 'bg-emerald-50 text-emerald-600' : 'bg-indigo-100 text-indigo-600'}`}>
+                                                                <Icon name={l.status === LessonStatus.COMPLETED ? "check-circle" : "clock"} className="h-6 w-6" />
+                                                            </div>
+                                                            <div>
+                                                                <h3 className="text-xl font-black text-slate-900 tracking-tight">{l.title}</h3>
+                                                                <div className="flex items-center gap-2 mt-1">
+                                                                    <Icon name="calendar" className="h-3 w-3 text-slate-400" />
+                                                                    <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">{l.date}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <span className={`self-start px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-[0.1em] border ${l.status === LessonStatus.COMPLETED ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-indigo-100 text-indigo-700 border-indigo-200'}`}>
+                                                            {l.status}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-sm text-slate-500 leading-relaxed font-medium bg-slate-50/50 p-6 rounded-2xl border border-slate-100">
+                                                        <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Descrizione Modulo</span>
+                                                        {l.description}
+                                                    </p>
+                                                    {l.hasDetails && (
+                                                        <button 
+                                                            onClick={() => handleSeeDetails(l.id)}
+                                                            className="mt-6 w-full py-4 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-indigo-600 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-slate-200"
+                                                        >
+                                                            <Icon name="external-link" className="h-4 w-4" /> Report Lezione & Guide
+                                                        </button>
+                                                    )}
+                                                </div>
                                             ))}
                                         </div>
                                     </div>
@@ -335,8 +506,23 @@
                             </>
                         )}
                     </main>
-                    <footer className="text-center py-12 text-slate-400 text-xs border-t border-slate-100 mt-20 font-bold uppercase tracking-widest">
-                        Angelo Faro &copy; {new Date().getFullYear()} — Prospetto Lezioni
+                    <footer className="py-12 px-4 border-t border-slate-200 mt-12 bg-white">
+                        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+                            <div className="flex items-center gap-2">
+                                <div className="bg-slate-900 p-1.5 rounded-lg">
+                                    <Icon name="code-2" className="h-4 w-4 text-white" />
+                                </div>
+                                <span className="text-sm font-black text-slate-900 uppercase tracking-widest">Angelo Faro</span>
+                            </div>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] text-center">
+                                Prospetto Lezioni &copy; {new Date().getFullYear()} — Engineering the Future
+                            </p>
+                            <div className="flex gap-4">
+                                <div className="h-2 w-2 rounded-full bg-indigo-500"></div>
+                                <div className="h-2 w-2 rounded-full bg-slate-200"></div>
+                                <div className="h-2 w-2 rounded-full bg-slate-200"></div>
+                            </div>
+                        </div>
                     </footer>
                 </div>
             );
