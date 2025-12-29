@@ -3,12 +3,12 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Prospetto Lezioni - Angelo Faro</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <!-- React & Babel Standalone -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -16,22 +16,23 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; -webkit-tap-highlight-color: transparent; }
         .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .tab-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        pre { background-color: #0f172a; color: #f8fafc; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; font-size: 0.875rem; line-height: 1.6; position: relative; }
+        pre { background-color: #0f172a; color: #f8fafc; padding: 1rem; border-radius: 0.75rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.6; position: relative; }
+        @media (min-width: 640px) { pre { padding: 1.5rem; font-size: 0.875rem; } }
         code { font-family: 'Fira Code', monospace; }
-        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
         .lesson-card:hover { transform: translateY(-2px); transition: all 0.3s ease; }
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        .table-fixed-header thead th { position: sticky; top: 0; background: #f8fafc; z-index: 10; }
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 1rem); }
+        .mobile-nav-active { color: #4f46e5; }
+        .mobile-nav-active::after { content: ''; position: absolute; bottom: -2px; left: 25%; right: 25%; height: 3px; background: #4f46e5; border-radius: 10px; }
     </style>
 </head>
-<body>
+<body class="overflow-x-hidden">
     <div id="root"></div>
 
     <script type="text/babel">
@@ -81,22 +82,22 @@
         const Navbar = ({ onHome }) => (
             <nav className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16 items-center">
-                        <div className="flex items-center gap-3 cursor-pointer group" onClick={onHome}>
-                            <div className="bg-indigo-600 p-2 rounded-xl group-hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-100">
-                                <Icon name="code-2" className="h-6 w-6 text-white" />
+                    <div className="flex justify-between h-14 sm:h-16 items-center">
+                        <div className="flex items-center gap-2 sm:gap-3 cursor-pointer group" onClick={onHome}>
+                            <div className="bg-indigo-600 p-1.5 sm:p-2 rounded-lg sm:rounded-xl group-hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-100">
+                                <Icon name="code-2" className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                             </div>
-                            <span className="text-xl font-bold text-slate-900 tracking-tight">
+                            <span className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
                                 Prospetto<span className="text-indigo-600">Lezioni</span>
                             </span>
                         </div>
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2 sm:gap-4">
                             <div className="hidden sm:flex flex-col items-end">
                                 <span className="text-sm font-semibold text-slate-800">Studente: Salvo</span>
                                 <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">C++ Fundamentals</span>
                             </div>
-                            <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
-                                <Icon name="user" className="h-5 w-5 text-slate-500" />
+                            <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
+                                <Icon name="user" className="h-4 w-4 sm:h-5 sm:w-5 text-slate-500" />
                             </div>
                         </div>
                     </div>
@@ -104,9 +105,30 @@
             </nav>
         );
 
+        const MobileBottomNav = ({ currentTab, onTabChange, view }) => {
+            if (view === 'detail') return null;
+            return (
+                <div className="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 px-6 py-2 flex justify-around items-center safe-bottom shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
+                    <button 
+                        onClick={() => onTabChange('dash')}
+                        className={`relative flex flex-col items-center gap-1 py-1 transition-colors ${currentTab === 'dash' ? 'mobile-nav-active' : 'text-slate-400'}`}
+                    >
+                        <Icon name="grid" className="h-5 w-5" />
+                        <span className="text-[10px] font-bold uppercase tracking-tighter">Dashboard</span>
+                    </button>
+                    <button 
+                        onClick={() => onTabChange('syll')}
+                        className={`relative flex flex-col items-center gap-1 py-1 transition-colors ${currentTab === 'syll' ? 'mobile-nav-active' : 'text-slate-400'}`}
+                    >
+                        <Icon name="list" className="h-5 w-5" />
+                        <span className="text-[10px] font-bold uppercase tracking-tighter">Piano</span>
+                    </button>
+                </div>
+            );
+        };
+
         const CodeBlock = ({ title, code }) => {
             const [copied, setCopied] = useState(false);
-
             const handleCopy = () => {
                 navigator.clipboard.writeText(code);
                 setCopied(true);
@@ -114,17 +136,17 @@
             };
 
             return (
-                <div className="mb-8 group">
+                <div className="mb-6 sm:mb-8 group">
                     <div className="flex justify-between items-center mb-2 px-1">
-                        <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                        <h4 className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
                             <Icon name="terminal" className="h-3 w-3" /> {title}
                         </h4>
                         <button 
                             onClick={handleCopy}
-                            className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 transition-colors"
+                            className="text-[10px] sm:text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 transition-colors bg-indigo-50 px-2 py-1 rounded-md"
                         >
                             <Icon name={copied ? "check" : "copy"} className="h-3 w-3" />
-                            {copied ? "Copiato!" : "Copia"}
+                            {copied ? "Copiato" : "Copia"}
                         </button>
                     </div>
                     <pre><code className="block whitespace-pre">{code}</code></pre>
@@ -133,19 +155,19 @@
         };
 
         const DetailDec22 = () => (
-            <div className="space-y-10">
+            <div className="space-y-8 sm:space-y-10">
                 <section>
-                    <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-4 sm:mb-6 flex items-center gap-2">
                         <Icon name="book-open" className="h-5 w-5 text-indigo-500" /> Concetti di Base
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                        <div className="p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl shadow-sm">
                             <h4 className="font-bold text-slate-900 mb-2">Le "Scatole" della Memoria</h4>
                             <p className="text-sm text-slate-600 leading-relaxed">
                                 Le variabili sono identificatori per porzioni di RAM. Immaginale come box etichettati dove il computer salva dati per usarli in seguito.
                             </p>
                         </div>
-                        <div className="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                        <div className="p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl shadow-sm">
                             <h4 className="font-bold text-slate-900 mb-2">Tipi di Dati</h4>
                             <p className="text-sm text-slate-600 leading-relaxed">
                                 <code>int</code> per interi, <code>float</code> per decimali, <code>char</code> per testi singoli e <code>bool</code> per stati vero/falso. Ogni tipo occupa uno spazio specifico in byte.
@@ -154,7 +176,7 @@
                     </div>
                 </section>
                 <section>
-                    <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-4 sm:mb-6 flex items-center gap-2">
                         <Icon name="file-code-2" className="h-5 w-5 text-indigo-500" /> Codice della Lezione
                     </h3>
                     <CodeBlock 
@@ -166,22 +188,22 @@
         );
 
         const DetailDec27 = () => (
-            <div className="space-y-12">
-                <section className="bg-indigo-50/50 p-8 rounded-3xl border border-indigo-100">
-                    <h3 className="text-2xl font-black text-indigo-900 mb-4 tracking-tight">Guida alla Logica delle Decisioni</h3>
-                    <p className="text-indigo-800/80 leading-relaxed text-lg">
+            <div className="space-y-8 sm:space-y-12">
+                <section className="bg-indigo-50/50 p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-indigo-100">
+                    <h3 className="text-xl sm:text-2xl font-black text-indigo-900 mb-3 tracking-tight">Guida alla Logica delle Decisioni</h3>
+                    <p className="text-indigo-800/80 leading-relaxed text-sm sm:text-lg">
                         Programmare non significa solo fare calcoli matematici. La parte più importante è insegnare al computer a prendere decisioni. I computer eseguono ordini basati su condizioni precise.
                     </p>
                 </section>
 
-                <div className="grid grid-cols-1 gap-10">
+                <div className="grid grid-cols-1 gap-8 sm:gap-10">
                     <section>
-                        <h4 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                            <span className="bg-indigo-100 text-indigo-600 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black">1</span>
+                        <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <span className="bg-indigo-100 text-indigo-600 w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-xs sm:text-sm font-black shrink-0">1</span>
                             Il blocco fondamentale: if
                         </h4>
-                        <div className="grid md:grid-cols-2 gap-6 items-start">
-                            <div className="text-sm text-slate-600 leading-relaxed bg-white p-6 rounded-2xl border border-slate-200">
+                        <div className="grid md:grid-cols-2 gap-4 sm:gap-6 items-start">
+                            <div className="text-sm text-slate-600 leading-relaxed bg-white p-5 sm:p-6 rounded-2xl border border-slate-200">
                                 L'<code>if</code> agisce come un portiere. Controlla una condizione:
                                 <ul className="list-disc ml-5 mt-3 space-y-1">
                                     <li>Se la condizione è <strong>VERA</strong>, esegue il codice.</li>
@@ -193,12 +215,12 @@
                     </section>
 
                     <section>
-                        <h4 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                            <span className="bg-indigo-100 text-indigo-600 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black">2</span>
+                        <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <span className="bg-indigo-100 text-indigo-600 w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-xs sm:text-sm font-black shrink-0">2</span>
                             L'alternativa: else
                         </h4>
-                        <div className="grid md:grid-cols-2 gap-6 items-start">
-                             <div className="text-sm text-slate-600 leading-relaxed bg-white p-6 rounded-2xl border border-slate-200">
+                        <div className="grid md:grid-cols-2 gap-4 sm:gap-6 items-start">
+                             <div className="text-sm text-slate-600 leading-relaxed bg-white p-5 sm:p-6 rounded-2xl border border-slate-200">
                                 Quando la condizione è falsa, usiamo <code>else</code> ("altrimenti") per gestire lo scenario alternativo.
                             </div>
                             <CodeBlock title="Esempio Monete" code={`int monete = 5;\nif (monete >= 10) {\n    cout << "Acquistato!";\n} else {\n    cout << "Fondi insufficienti.";\n}`} />
@@ -206,84 +228,86 @@
                     </section>
 
                     <section>
-                        <h4 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
-                            <span className="bg-indigo-100 text-indigo-600 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black">3</span>
+                        <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+                            <span className="bg-indigo-100 text-indigo-600 w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-xs sm:text-sm font-black shrink-0">3</span>
                             Logica Booleana e Operatori
                         </h4>
-                        <div className="overflow-hidden border border-slate-200 rounded-2xl shadow-sm">
-                            <table className="w-full text-left text-sm">
-                                <thead className="bg-slate-50 text-slate-500 font-bold uppercase text-[10px] tracking-widest">
-                                    <tr>
-                                        <th className="px-6 py-4">Simbolo</th>
-                                        <th className="px-6 py-4">Significato</th>
-                                        <th className="px-6 py-4">Esempio</th>
-                                        <th className="px-6 py-4">Risultato (x=5)</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-100 bg-white">
-                                    {[
-                                        ['==', 'Uguale a', 'x == 5', 'true'],
-                                        ['!=', 'Diverso da', 'x != 5', 'false'],
-                                        ['<', 'Minore di', 'x < 10', 'true'],
-                                        ['>', 'Maggiore di', 'x > 10', 'false'],
-                                        ['<=', 'Minore o uguale', 'x <= 5', 'true'],
-                                        ['>=', 'Maggiore o uguale', 'x >= 5', 'true']
-                                    ].map(([sim, sig, ex, res], i) => (
-                                        <tr key={i} className="hover:bg-slate-50/50">
-                                            <td className="px-6 py-4 font-mono font-bold text-indigo-600">{sim}</td>
-                                            <td className="px-6 py-4">{sig}</td>
-                                            <td className="px-6 py-4 font-mono text-slate-500">{ex}</td>
-                                            <td className="px-6 py-4">
-                                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${res === 'true' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
-                                                    {res.toUpperCase()}
-                                                </span>
-                                            </td>
+                        <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+                            <div className="min-w-[500px] border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                                <table className="w-full text-left text-sm">
+                                    <thead className="bg-slate-50 text-slate-500 font-bold uppercase text-[10px] tracking-widest">
+                                        <tr>
+                                            <th className="px-4 sm:px-6 py-3 sm:py-4">Simbolo</th>
+                                            <th className="px-4 sm:px-6 py-3 sm:py-4">Significato</th>
+                                            <th className="px-4 sm:px-6 py-3 sm:py-4">Esempio</th>
+                                            <th className="px-4 sm:px-6 py-3 sm:py-4 text-right">Risultato (x=5)</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-100 bg-white">
+                                        {[
+                                            ['==', 'Uguale a', 'x == 5', 'true'],
+                                            ['!=', 'Diverso da', 'x != 5', 'false'],
+                                            ['<', 'Minore di', 'x < 10', 'true'],
+                                            ['>', 'Maggiore di', 'x > 10', 'false'],
+                                            ['<=', 'Minore o uguale', 'x <= 5', 'true'],
+                                            ['>=', 'Maggiore o uguale', 'x >= 5', 'true']
+                                        ].map(([sim, sig, ex, res], i) => (
+                                            <tr key={i} className="hover:bg-slate-50/50">
+                                                <td className="px-4 sm:px-6 py-3 sm:py-4 font-mono font-bold text-indigo-600">{sim}</td>
+                                                <td className="px-4 sm:px-6 py-3 sm:py-4">{sig}</td>
+                                                <td className="px-4 sm:px-6 py-3 sm:py-4 font-mono text-slate-500">{ex}</td>
+                                                <td className="px-4 sm:px-6 py-3 sm:py-4 text-right">
+                                                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${res === 'true' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
+                                                        {res.toUpperCase()}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </section>
 
                     <section>
-                        <h4 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
-                            <span className="bg-indigo-100 text-indigo-600 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black">4</span>
+                        <h4 className="text-base sm:text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+                            <span className="bg-indigo-100 text-indigo-600 w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-xs sm:text-sm font-black shrink-0">4</span>
                             Operatori Logici (AND, OR, NOT)
                         </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="p-6 bg-white border border-slate-200 rounded-2xl">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                            <div className="p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl">
                                 <h5 className="font-bold text-indigo-600 mb-2 flex items-center gap-1">&& (AND)</h5>
                                 <p className="text-xs text-slate-500 leading-relaxed">Tutte le condizioni devono essere vere.</p>
-                                <div className="mt-3 text-[11px] font-mono text-slate-400">if (eta > 18 && patente == true)</div>
+                                <div className="mt-3 text-[10px] sm:text-[11px] font-mono text-slate-400 break-all">if (eta > 18 && patente == true)</div>
                             </div>
-                            <div className="p-6 bg-white border border-slate-200 rounded-2xl">
+                            <div className="p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl">
                                 <h5 className="font-bold text-indigo-600 mb-2 flex items-center gap-1">|| (OR)</h5>
                                 <p className="text-xs text-slate-500 leading-relaxed">Basta che almeno una sia vera.</p>
-                                <div className="mt-3 text-[11px] font-mono text-slate-400">if (sabato || domenica)</div>
+                                <div className="mt-3 text-[10px] sm:text-[11px] font-mono text-slate-400 break-all">if (sabato || domenica)</div>
                             </div>
-                            <div className="p-6 bg-white border border-slate-200 rounded-2xl">
+                            <div className="p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl">
                                 <h5 className="font-bold text-indigo-600 mb-2 flex items-center gap-1">! (NOT)</h5>
                                 <p className="text-xs text-slate-500 leading-relaxed">Ribalta il risultato (Vero -> Falso).</p>
-                                <div className="mt-3 text-[11px] font-mono text-slate-400">if (!piove) // Se non piove</div>
+                                <div className="mt-3 text-[10px] sm:text-[11px] font-mono text-slate-400 break-all">if (!piove) // Se non piove</div>
                             </div>
                         </div>
                     </section>
 
-                    <section className="bg-slate-900 text-slate-300 p-8 rounded-3xl">
-                         <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                            <Icon name="alert-triangle" className="text-amber-400 h-5 w-5" /> Attenzione all'Assegnamento
+                    <section className="bg-slate-900 text-slate-300 p-6 sm:p-8 rounded-2xl sm:rounded-3xl">
+                         <h4 className="text-base sm:text-lg font-bold text-white mb-4 flex items-center gap-2">
+                            <Icon name="alert-triangle" className="text-amber-400 h-5 w-5 shrink-0" /> Errore Comune
                         </h4>
-                        <p className="text-sm mb-6">L'errore più comune dei principianti è confondere i simboli di uguaglianza:</p>
-                        <div className="grid grid-cols-2 gap-4">
+                        <p className="text-xs sm:text-sm mb-6">Non confondere i simboli di uguaglianza:</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="border border-rose-500/30 bg-rose-500/10 p-4 rounded-xl">
-                                <div className="text-[10px] font-bold text-rose-400 uppercase mb-1">Errore</div>
+                                <div className="text-[10px] font-bold text-rose-400 uppercase mb-1 tracking-widest">Errore</div>
                                 <code className="text-sm">if (x = 10)</code>
-                                <p className="text-[10px] mt-1 text-rose-300">Cambia x in 10 e risulta sempre vero.</p>
+                                <p className="text-[10px] mt-1 text-rose-300">Cambia x in 10 (Sempre vero).</p>
                             </div>
                             <div className="border border-emerald-500/30 bg-emerald-500/10 p-4 rounded-xl">
-                                <div className="text-[10px] font-bold text-emerald-400 uppercase mb-1">Corretto</div>
+                                <div className="text-[10px] font-bold text-emerald-400 uppercase mb-1 tracking-widest">Corretto</div>
                                 <code className="text-sm">if (x == 10)</code>
-                                <p className="text-[10px] mt-1 text-emerald-300">Chiede: "x è uguale a 10?".</p>
+                                <p className="text-[10px] mt-1 text-emerald-300">Chiede: "x vale 10?".</p>
                             </div>
                         </div>
                     </section>
@@ -293,29 +317,29 @@
 
         const LessonDetail = ({ id, onBack }) => {
             return (
-                <div className="animate-fade-in max-w-5xl mx-auto pb-12">
+                <div className="animate-fade-in max-w-5xl mx-auto pb-6 sm:pb-12">
                     <button 
                         onClick={onBack}
-                        className="flex items-center gap-2 text-slate-500 font-bold mb-8 hover:text-indigo-600 transition-colors bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm"
+                        className="flex items-center gap-2 text-slate-500 font-bold mb-6 sm:mb-8 hover:text-indigo-600 transition-colors bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-slate-200 shadow-sm text-xs sm:text-sm"
                     >
                         <Icon name="chevron-left" className="h-4 w-4" /> Torna al Prospetto
                     </button>
 
-                    <div className="bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-xl shadow-slate-200/50 mb-10">
-                        <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-10 text-white relative">
-                            <div className="absolute top-0 right-0 p-8 opacity-10">
-                                <Icon name="code-2" className="h-40 w-40" />
+                    <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-[2rem] overflow-hidden shadow-xl shadow-slate-200/50 mb-10">
+                        <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-6 sm:p-10 text-white relative">
+                            <div className="absolute top-0 right-0 p-4 sm:p-8 opacity-10">
+                                <Icon name="code-2" className="h-24 w-24 sm:h-40 sm:w-40" />
                             </div>
-                            <div className="flex items-center gap-3 mb-4">
-                                <span className="bg-indigo-500 text-[10px] font-black uppercase px-2.5 py-1 rounded-md tracking-wider">Sessione Completa</span>
-                                <span className="text-slate-400 text-sm font-medium">{id === 'dec-27' ? '27 Dicembre' : '22 Dicembre'}</span>
+                            <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                                <span className="bg-indigo-500 text-[10px] font-black uppercase px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md tracking-wider">Report</span>
+                                <span className="text-slate-400 text-[10px] sm:text-sm font-medium">{id === 'dec-27' ? '27 Dicembre' : '22 Dicembre'}</span>
                             </div>
-                            <h2 className="text-4xl font-black tracking-tight max-w-2xl leading-tight">
-                                {id === 'dec-27' ? 'Logica delle Decisioni in C++: if, else e Booleani' : 'Introduzione alla Programmazione e I/O'}
+                            <h2 className="text-2xl sm:text-4xl font-black tracking-tight max-w-2xl leading-tight">
+                                {id === 'dec-27' ? 'Logica delle Decisioni in C++' : 'Fondamenti & I/O'}
                             </h2>
                         </div>
 
-                        <div className="p-10">
+                        <div className="p-5 sm:p-10">
                             {id === 'dec-27' ? <DetailDec27 /> : <DetailDec22 />}
                         </div>
                     </div>
@@ -328,59 +352,59 @@
             const nextLesson = SYLLABUS_DATA.find(l => l.status === LessonStatus.SCHEDULED);
 
             return (
-                <div className="space-y-8 animate-fade-in">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+                <div className="space-y-6 sm:space-y-8 animate-fade-in">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                        <div className="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-[2rem] border border-slate-200 shadow-sm flex flex-col justify-between relative overflow-hidden group">
                             <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-110 transition-transform">
-                                <Icon name="graduation-cap" className="h-24 w-24" />
+                                <Icon name="graduation-cap" className="h-20 w-20 sm:h-24 sm:w-24" />
                             </div>
                             <div>
-                                <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Lezioni Erogate</p>
-                                <span className="text-6xl font-black text-slate-900">{completedCount}</span>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1 sm:mb-2">Lezioni Erogate</p>
+                                <span className="text-5xl sm:text-6xl font-black text-slate-900">{completedCount}</span>
                             </div>
                             <div className="mt-4">
-                                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                <div className="w-full bg-slate-100 h-1.5 sm:h-2 rounded-full overflow-hidden">
                                     <div className="bg-indigo-600 h-full rounded-full" style={{width: '20%'}}></div>
                                 </div>
-                                <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-wider">Obiettivo: Fondamenti C++</p>
+                                <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-wider">Percorso: 20% Completato</p>
                             </div>
                         </div>
 
-                        <div className="bg-indigo-600 p-8 rounded-[2rem] shadow-xl shadow-indigo-200 flex flex-col justify-between relative overflow-hidden group lg:col-span-2">
-                             <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:rotate-12 transition-transform">
-                                <Icon name="calendar" className="h-32 w-32 text-white" />
+                        <div className="bg-indigo-600 p-6 sm:p-8 rounded-2xl sm:rounded-[2rem] shadow-xl shadow-indigo-200 flex flex-col justify-between relative overflow-hidden group lg:col-span-2">
+                             <div className="absolute top-0 right-0 p-4 sm:p-6 opacity-10 group-hover:rotate-12 transition-transform">
+                                <Icon name="calendar" className="h-24 w-24 sm:h-32 sm:w-32 text-white" />
                             </div>
                             <div>
-                                <p className="text-xs font-black text-indigo-200 uppercase tracking-[0.2em] mb-2">Prossimo Incontro</p>
-                                <h3 className="text-3xl font-black text-white tracking-tight">{nextLesson?.date}</h3>
-                                <p className="text-indigo-100 mt-2 text-sm font-medium flex items-center gap-2">
-                                    <Icon name="book" className="h-4 w-4" /> {nextLesson?.title}
+                                <p className="text-[10px] font-black text-indigo-200 uppercase tracking-[0.2em] mb-1 sm:mb-2">Prossimo Incontro</p>
+                                <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight leading-tight">{nextLesson?.date}</h3>
+                                <p className="text-indigo-100 mt-2 text-xs sm:text-sm font-medium flex items-center gap-2">
+                                    <Icon name="book" className="h-4 w-4 shrink-0" /> {nextLesson?.title}
                                 </p>
                             </div>
-                            <div className="mt-6 flex gap-3">
-                                <span className="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-bold text-white uppercase tracking-wider">30 DIC</span>
-                                <span className="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-bold text-white uppercase tracking-wider">16:00</span>
+                            <div className="mt-4 sm:mt-6 flex gap-2">
+                                <span className="px-2 py-0.5 sm:px-3 sm:py-1 bg-white/10 rounded-lg text-[10px] font-bold text-white uppercase tracking-wider">30 DIC</span>
+                                <span className="px-2 py-0.5 sm:px-3 sm:py-1 bg-white/10 rounded-lg text-[10px] font-bold text-white uppercase tracking-wider">16:00</span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white p-10 rounded-[2rem] border border-slate-200 shadow-sm relative group">
-                        <div className="flex justify-between items-center mb-10">
+                    <div className="bg-white p-6 sm:p-10 rounded-2xl sm:rounded-[2rem] border border-slate-200 shadow-sm relative group">
+                        <div className="flex justify-between items-center mb-6 sm:mb-10">
                             <div>
-                                <h2 className="text-xl font-black text-slate-900 tracking-tight">Focus Attività</h2>
-                                <p className="text-xs text-slate-400 font-bold uppercase mt-1">Stato avanzamento mensile</p>
+                                <h2 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">Focus Attività</h2>
+                                <p className="text-[10px] text-slate-400 font-bold uppercase mt-1">Stato avanzamento</p>
                             </div>
-                            <div className="bg-slate-50 px-4 py-2 rounded-xl border border-slate-100 flex items-center gap-2">
+                            <div className="bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 flex items-center gap-2">
                                 <div className="h-2 w-2 rounded-full bg-indigo-500 animate-pulse"></div>
-                                <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Live Updates</span>
+                                <span className="text-[9px] sm:text-[10px] font-black text-slate-600 uppercase tracking-widest">Live</span>
                             </div>
                         </div>
-                        <div className="flex items-end gap-6 h-48">
+                        <div className="flex items-end gap-3 sm:gap-6 h-36 sm:h-48">
                             {['Ott', 'Nov', 'Dic', 'Gen'].map((m, i) => (
-                                <div key={i} className="flex-1 flex flex-col items-center gap-4">
-                                    <div className="w-full bg-slate-100 rounded-2xl relative group/bar h-full overflow-hidden">
+                                <div key={i} className="flex-1 flex flex-col items-center gap-3 sm:gap-4">
+                                    <div className="w-full bg-slate-100 rounded-xl sm:rounded-2xl relative group/bar h-full overflow-hidden">
                                         <div 
-                                            className={`absolute bottom-0 w-full rounded-2xl transition-all duration-1000 ${m === 'Dic' ? 'bg-indigo-500' : 'bg-slate-200'}`} 
+                                            className={`absolute bottom-0 w-full rounded-xl sm:rounded-2xl transition-all duration-1000 ${m === 'Dic' ? 'bg-indigo-500' : 'bg-slate-200'}`} 
                                             style={{height: m === 'Dic' ? '35%' : '5%'}}
                                         ></div>
                                     </div>
@@ -401,48 +425,57 @@
             const handleBack = () => {
                 setView('main');
                 setTab('syll');
+                window.scrollTo(0, 0);
             };
 
             const handleHome = () => {
                 setView('main');
                 setTab('dash');
                 setSelectedId(null);
+                window.scrollTo(0, 0);
             };
 
             const handleSeeDetails = (id) => {
                 setSelectedId(id);
                 setView('detail');
+                window.scrollTo(0, 0);
             };
+
+            const handleTabChange = (newTab) => {
+                setTab(newTab);
+                window.scrollTo(0, 0);
+            }
 
             const sortedSyllabus = [...SYLLABUS_DATA].sort((a, b) => b.timestamp - a.timestamp);
 
             return (
-                <div className="min-h-screen flex flex-col">
+                <div className="min-h-screen flex flex-col pb-20 sm:pb-0">
                     <Navbar onHome={handleHome} />
-                    <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+                    <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 w-full">
                         
                         {view === 'detail' ? (
                             <LessonDetail id={selectedId} onBack={handleBack} />
                         ) : (
                             <>
-                                <header className="mb-12">
+                                <header className="mb-8 sm:mb-12">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <div className="h-px w-8 bg-indigo-600"></div>
-                                        <span className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em]">C++ Developer Path</span>
+                                        <div className="h-px w-6 sm:w-8 bg-indigo-600"></div>
+                                        <span className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em] sm:tracking-[0.3em]">C++ Developer Path</span>
                                     </div>
-                                    <h1 className="text-4xl font-black text-slate-900 tracking-tight">Monitoraggio Formazione</h1>
-                                    <p className="text-slate-400 mt-2 font-medium italic">Dashboard didattica personalizzata per lo studente Salvo.</p>
+                                    <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Monitoraggio Formazione</h1>
+                                    <p className="text-slate-400 mt-1 sm:text-base text-sm font-medium italic">Dashboard didattica per Salvo.</p>
                                 </header>
 
-                                <div className="flex bg-slate-100 p-1.5 rounded-2xl w-fit mb-12 border border-slate-200">
+                                {/* Desktop Tabs */}
+                                <div className="hidden sm:flex bg-slate-100 p-1.5 rounded-2xl w-fit mb-12 border border-slate-200">
                                     <button 
-                                        onClick={() => setTab('dash')} 
+                                        onClick={() => handleTabChange('dash')} 
                                         className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 tab-transition ${tab === 'dash' ? 'bg-white text-indigo-600 shadow-md ring-1 ring-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
                                     >
                                         <Icon name="grid" className="h-4 w-4" /> Dashboard
                                     </button>
                                     <button 
-                                        onClick={() => setTab('syll')} 
+                                        onClick={() => handleTabChange('syll')} 
                                         className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 tab-transition ${tab === 'syll' ? 'bg-white text-indigo-600 shadow-md ring-1 ring-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
                                     >
                                         <Icon name="list" className="h-4 w-4" /> Piano Didattico
@@ -450,52 +483,52 @@
                                 </div>
 
                                 {tab === 'dash' ? <Dashboard /> : (
-                                    <div className="space-y-10 animate-fade-in max-w-4xl">
-                                        <div className="bg-indigo-600 rounded-[2rem] p-8 flex flex-col md:flex-row gap-6 items-center shadow-xl shadow-indigo-100">
-                                            <div className="bg-white/10 p-4 rounded-2xl">
-                                                <Icon name="zap" className="h-8 w-8 text-white" />
+                                    <div className="space-y-6 sm:space-y-10 animate-fade-in max-w-4xl">
+                                        <div className="bg-indigo-600 rounded-2xl sm:rounded-[2rem] p-6 sm:p-8 flex flex-col md:flex-row gap-4 sm:gap-6 items-center shadow-xl shadow-indigo-100">
+                                            <div className="bg-white/10 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
+                                                <Icon name="zap" className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
                                             </div>
                                             <div className="text-center md:text-left">
-                                                <p className="text-xs font-bold text-indigo-100 uppercase tracking-widest">In Corso d'opera</p>
-                                                <p className="text-white font-medium mt-1 leading-relaxed">
-                                                    Stiamo consolidando la logica di controllo. La prossima sessione introdurrà i <strong>cicli</strong>, lo strumento definitivo per la scalabilità del codice.
+                                                <p className="text-[10px] font-bold text-indigo-100 uppercase tracking-widest">In Corso</p>
+                                                <p className="text-white text-sm font-medium mt-1 leading-relaxed">
+                                                    Stiamo consolidando la logica di controllo. La prossima sessione introdurrà i <strong>cicli</strong>.
                                                 </p>
                                             </div>
                                         </div>
 
-                                        <div className="grid grid-cols-1 gap-6">
+                                        <div className="grid grid-cols-1 gap-4 sm:gap-6">
                                             {sortedSyllabus.map(l => (
                                                 <div 
                                                     key={l.id} 
-                                                    className={`lesson-card bg-white border rounded-[1.5rem] p-8 transition-all duration-300 shadow-sm ${l.status === LessonStatus.SCHEDULED ? 'border-dashed border-indigo-300 bg-indigo-50/20' : 'border-slate-200'}`}
+                                                    className={`lesson-card bg-white border rounded-2xl sm:rounded-[1.5rem] p-5 sm:p-8 transition-all duration-300 shadow-sm ${l.status === LessonStatus.SCHEDULED ? 'border-dashed border-indigo-300 bg-indigo-50/20' : 'border-slate-200'}`}
                                                 >
-                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                                                        <div className="flex items-center gap-4">
-                                                            <div className={`p-3 rounded-xl ${l.status === LessonStatus.COMPLETED ? 'bg-emerald-50 text-emerald-600' : 'bg-indigo-100 text-indigo-600'}`}>
-                                                                <Icon name={l.status === LessonStatus.COMPLETED ? "check-circle" : "clock"} className="h-6 w-6" />
+                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 sm:mb-6">
+                                                        <div className="flex items-center gap-3 sm:gap-4">
+                                                            <div className={`p-2.5 sm:p-3 rounded-xl ${l.status === LessonStatus.COMPLETED ? 'bg-emerald-50 text-emerald-600' : 'bg-indigo-100 text-indigo-600'}`}>
+                                                                <Icon name={l.status === LessonStatus.COMPLETED ? "check-circle" : "clock"} className="h-5 w-5 sm:h-6 sm:w-6" />
                                                             </div>
                                                             <div>
-                                                                <h3 className="text-xl font-black text-slate-900 tracking-tight">{l.title}</h3>
-                                                                <div className="flex items-center gap-2 mt-1">
+                                                                <h3 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight leading-tight">{l.title}</h3>
+                                                                <div className="flex items-center gap-1.5 mt-1">
                                                                     <Icon name="calendar" className="h-3 w-3 text-slate-400" />
-                                                                    <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">{l.date}</span>
+                                                                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{l.date}</span>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <span className={`self-start px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-[0.1em] border ${l.status === LessonStatus.COMPLETED ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-indigo-100 text-indigo-700 border-indigo-200'}`}>
+                                                        <span className={`self-start px-2 py-0.5 sm:px-3 sm:py-1 rounded-lg text-[9px] sm:text-[10px] font-black uppercase tracking-wider border ${l.status === LessonStatus.COMPLETED ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-indigo-100 text-indigo-700 border-indigo-200'}`}>
                                                             {l.status}
                                                         </span>
                                                     </div>
-                                                    <p className="text-sm text-slate-500 leading-relaxed font-medium bg-slate-50/50 p-6 rounded-2xl border border-slate-100">
-                                                        <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Descrizione Modulo</span>
+                                                    <p className="text-xs sm:text-sm text-slate-500 leading-relaxed font-medium bg-slate-50/50 p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-slate-100">
+                                                        <span className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Modulo</span>
                                                         {l.description}
                                                     </p>
                                                     {l.hasDetails && (
                                                         <button 
                                                             onClick={() => handleSeeDetails(l.id)}
-                                                            className="mt-6 w-full py-4 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-indigo-600 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-slate-200"
+                                                            className="mt-4 sm:mt-6 w-full py-3.5 sm:py-4 bg-slate-900 text-white rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-widest hover:bg-indigo-600 transition-colors flex items-center justify-center gap-2"
                                                         >
-                                                            <Icon name="external-link" className="h-4 w-4" /> Report Lezione & Guide
+                                                            <Icon name="file-text" className="h-4 w-4" /> Report Lezione
                                                         </button>
                                                     )}
                                                 </div>
@@ -506,21 +539,25 @@
                             </>
                         )}
                     </main>
-                    <footer className="py-12 px-4 border-t border-slate-200 mt-12 bg-white">
-                        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+
+                    {/* Mobile Navigation Bar */}
+                    <MobileBottomNav currentTab={tab} onTabChange={handleTabChange} view={view} />
+
+                    <footer className="py-8 sm:py-12 px-4 border-t border-slate-200 bg-white">
+                        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6">
                             <div className="flex items-center gap-2">
                                 <div className="bg-slate-900 p-1.5 rounded-lg">
                                     <Icon name="code-2" className="h-4 w-4 text-white" />
                                 </div>
-                                <span className="text-sm font-black text-slate-900 uppercase tracking-widest">Angelo Faro</span>
+                                <span className="text-xs font-black text-slate-900 uppercase tracking-widest">Angelo Faro</span>
                             </div>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] text-center">
-                                Prospetto Lezioni &copy; {new Date().getFullYear()} 
+                            <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">
+                                Prospetto &copy; {new Date().getFullYear()} — Mentoring
                             </p>
-                            <div className="flex gap-4">
-                                <div className="h-2 w-2 rounded-full bg-indigo-500"></div>
-                                <div className="h-2 w-2 rounded-full bg-slate-200"></div>
-                                <div className="h-2 w-2 rounded-full bg-slate-200"></div>
+                            <div className="flex gap-3">
+                                <div className="h-1.5 w-1.5 rounded-full bg-indigo-500"></div>
+                                <div className="h-1.5 w-1.5 rounded-full bg-slate-200"></div>
+                                <div className="h-1.5 w-1.5 rounded-full bg-slate-200"></div>
                             </div>
                         </div>
                     </footer>
