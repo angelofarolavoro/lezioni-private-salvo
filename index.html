@@ -20,8 +20,8 @@
         .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .tab-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        pre { background-color: #0f172a; color: #f8fafc; padding: 1rem; border-radius: 1rem; overflow-x: auto; font-size: 0.9rem; line-height: 1.6; position: relative; }
-        @media (min-width: 640px) { pre { padding: 2rem; font-size: 1.1rem; } }
+        pre { background-color: #0f172a; color: #f8fafc; padding: 1.5rem; border-radius: 1rem; overflow-x: auto; font-size: 0.95rem; line-height: 1.6; position: relative; }
+        @media (min-width: 640px) { pre { padding: 2.5rem; font-size: 1.2rem; } }
         code { font-family: 'Fira Code', monospace; }
         .lesson-card:hover { transform: translateY(-2px); transition: all 0.3s ease; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -30,9 +30,9 @@
         .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 1rem); }
         .mobile-nav-active { color: #4f46e5; }
         .mobile-nav-active::after { content: ''; position: absolute; bottom: -2px; left: 25%; right: 25%; height: 3px; background: #4f46e5; border-radius: 10px; }
-        .logic-card { border-left: 6px solid #6366f1; }
+        .logic-card { border-left: 6px solid #6366f1; padding-left: 1.5rem; }
         .code-large pre { font-size: 1rem; }
-        @media (min-width: 640px) { .code-large pre { font-size: 1.25rem; } }
+        @media (min-width: 640px) { .code-large pre { font-size: 1.3rem; } }
     </style>
 </head>
 <body class="overflow-x-hidden">
@@ -54,6 +54,15 @@
         };
 
         const SYLLABUS_DATA = [
+            {
+                id: 'jan-3-5',
+                title: 'Consolidamento Cicli e Logica Avanzata',
+                description: 'Lezione unificata dedicata alla risoluzione di problemi complessi, annidamento di cicli e ottimizzazione della logica iterativa.',
+                date: '3-5 Gennaio 2025',
+                status: LessonStatus.COMPLETED,
+                hasDetails: true,
+                timestamp: new Date('2025-01-05T18:00:00')
+            },
             {
                 id: 'dec-30',
                 title: 'Interazioni e Cicli (for, while)',
@@ -114,12 +123,16 @@
             return (
                 <div className="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 px-6 py-2 flex justify-around items-center safe-bottom shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
                     <button onClick={() => onTabChange('dash')} className={`relative flex flex-col items-center gap-1 py-1 transition-colors ${currentTab === 'dash' ? 'mobile-nav-active' : 'text-slate-400'}`}>
-                        <Icon name="grid" className="h-5 w-5" />
+                        <Icon name="grid" className="h-4 w-4" />
                         <span className="text-[10px] font-bold uppercase tracking-tighter">Dashboard</span>
                     </button>
                     <button onClick={() => onTabChange('syll')} className={`relative flex flex-col items-center gap-1 py-1 transition-colors ${currentTab === 'syll' ? 'mobile-nav-active' : 'text-slate-400'}`}>
-                        <Icon name="list" className="h-5 w-5" />
+                        <Icon name="list" className="h-4 w-4" />
                         <span className="text-[10px] font-bold uppercase tracking-tighter">Piano</span>
+                    </button>
+                    <button onClick={() => onTabChange('homework')} className={`relative flex flex-col items-center gap-1 py-1 transition-colors ${currentTab === 'homework' ? 'mobile-nav-active' : 'text-slate-400'}`}>
+                        <Icon name="edit-3" className="h-4 w-4" />
+                        <span className="text-[10px] font-bold uppercase tracking-tighter">Compiti</span>
                     </button>
                 </div>
             );
@@ -134,12 +147,12 @@
             };
 
             return (
-                <div className={`mb-8 group ${isLarge ? 'code-large' : ''}`}>
-                    <div className="flex justify-between items-center mb-3 px-1">
+                <div className={`mb-10 group ${isLarge ? 'code-large' : ''}`}>
+                    <div className="flex justify-between items-center mb-4 px-1">
                         <h4 className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
                             <Icon name="terminal" className="h-4 w-4 text-indigo-500" /> {title}
                         </h4>
-                        <button onClick={handleCopy} className="text-[10px] sm:text-xs font-black text-white hover:bg-indigo-700 bg-indigo-600 px-4 py-2 rounded-xl transition-all shadow-lg shadow-indigo-100 flex items-center gap-2">
+                        <button onClick={handleCopy} className="text-[10px] sm:text-xs font-black text-white hover:bg-indigo-700 bg-indigo-600 px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-indigo-100 flex items-center gap-2">
                             <Icon name={copied ? "check" : "copy"} className="h-3 w-3" />
                             {copied ? "COPIATO!" : "COPIA CODICE"}
                         </button>
@@ -149,233 +162,359 @@
             );
         };
 
-        const DetailDec22 = () => (
-            <div className="space-y-8">
-                <section>
-                    <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                        <Icon name="book-open" className="h-5 w-5 text-indigo-500" /> Concetti di Base
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm">
-                            <h4 className="font-bold text-slate-900 mb-2">Le "Scatole" della Memoria</h4>
-                            <p className="text-sm text-slate-600 leading-relaxed">
-                                Variabili come locazioni di memoria RAM etichettate per conservare dati.
-                            </p>
+        const DetailJan3_5 = () => (
+            <div className="space-y-16">
+                <section className="bg-indigo-50 p-10 rounded-[3rem] border border-indigo-100 shadow-sm">
+                    <h3 className="text-3xl font-black text-indigo-900 mb-6 tracking-tight">Approfondimento: Padronanza Iterativa</h3>
+                    <p className="text-indigo-800 leading-relaxed text-xl font-light italic">
+                        "Un bravo programmatore non scrive codice che il computer capisce, ma codice che altri programmatori possono capire facilmente."
+                    </p>
+                    <p className="mt-6 text-indigo-900/80 leading-relaxed text-lg">
+                        In questa sessione unificata abbiamo smesso di guardare i cicli come "comandi singoli" e abbiamo iniziato a vederli come <strong>mattoni costruttivi</strong> per algoritmi complessi. Abbiamo analizzato come la velocità di esecuzione (complessità computazionale) cambi quando mettiamo un ciclo dentro l'altro.
+                    </p>
+                </section>
+
+                <section className="space-y-8">
+                    <div className="flex items-center gap-4">
+                        <div className="bg-indigo-600 text-white p-3 rounded-2xl shadow-lg"><Icon name="layers" /></div>
+                        <h4 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">Cicli Annidati: Il concetto di Matrice</h4>
+                    </div>
+                    <p className="text-slate-600 text-lg leading-relaxed">
+                        Immagina di voler stampare una griglia. Il ciclo <strong>esterno</strong> decide in quale riga ti trovi. Il ciclo <strong>interno</strong> decide in quale colonna ti trovi. Finché il ciclo interno non ha finito tutti i suoi giri (tutte le colonne), il ciclo esterno non può passare alla riga successiva.
+                    </p>
+                    <div className="logic-card bg-slate-50 rounded-2xl border border-slate-200 p-8 space-y-4">
+                        <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Esempio Passo-Passo</p>
+                        <ol className="list-decimal list-inside space-y-3 text-slate-700 font-medium">
+                            <li>Riga 1 (i=1): Inizia ciclo interno (j).</li>
+                            <li>j=1, j=2, j=3... Fine colonne riga 1.</li>
+                            <li>A capo.</li>
+                            <li>Riga 2 (i=2): Ricomincia ciclo interno (j=1, j=2...).</li>
+                        </ol>
+                    </div>
+                    <CodeBlock 
+                        isLarge={true}
+                        title="Tavola Pitagorica Dinamica"
+                        code={`for (int i = 1; i <= 5; i++) { // Righe\n    for (int j = 1; j <= 5; j++) { // Colonne\n        cout << i * j << "\\t"; // Stampa risultato e tabulazione\n    }\n    cout << endl; // A capo dopo ogni riga completa\n}`}
+                    />
+                </section>
+
+                <section className="bg-slate-900 p-10 sm:p-16 rounded-[3rem] text-white shadow-2xl">
+                    <h4 className="text-2xl font-black mb-8 text-indigo-400 uppercase tracking-widest">Sfide di Codifica per Casa</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div className="space-y-4">
+                            <h5 className="text-xl font-bold text-white flex items-center gap-2"><Icon name="edit" className="text-indigo-400" /> Triangolo di Asterischi</h5>
+                            <p className="text-slate-400 text-sm leading-relaxed">Modifica il ciclo annidato affinché il ciclo interno (j) arrivi solo fino a 'i'. In questo modo la riga 1 avrà 1 asterisco, la riga 2 ne avrà 2, e così via.</p>
                         </div>
-                        <div className="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm">
-                            <h4 className="font-bold text-slate-900 mb-2">Tipi di Dati</h4>
-                            <p className="text-sm text-slate-600 leading-relaxed">
-                                Int, Float, Char e Bool: la diversità dei dati in base alla dimensione e natura.
-                            </p>
+                        <div className="space-y-4">
+                            <h5 className="text-xl font-bold text-white flex items-center gap-2"><Icon name="cpu" className="text-indigo-400" /> Analisi della Complessità</h5>
+                            <p className="text-slate-400 text-sm leading-relaxed">Se il ciclo esterno gira 100 volte e quello interno 100 volte, quante operazioni farà il computer in totale? (Risposta: 100 * 100 = 10.000).</p>
                         </div>
                     </div>
                 </section>
-                <CodeBlock 
-                    title="Somma Input" 
-                    code={`#include <iostream>\nusing namespace std;\n\nint main() {\n    int a, b;\n    cout << "Inserisci a e b: ";\n    cin >> a >> b;\n    cout << "Somma: " << a + b << endl;\n    return 0;\n}`}
-                />
-            </div>
-        );
-
-        const DetailDec27 = () => (
-            <div className="space-y-8">
-                <section className="bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100">
-                    <h3 className="text-xl font-black text-indigo-900 mb-3 tracking-tight uppercase">Decision Making</h3>
-                    <p className="text-indigo-800/80 leading-relaxed text-sm sm:text-base">
-                        Insegnare al computer a prendere decisioni usando <code>if</code> e <code>else</code>.
-                    </p>
-                </section>
-                <CodeBlock 
-                    title="Esempio If-Else" 
-                    code={`int monete = 5;\nif (monete >= 10) {\n    cout << "Acquisto effettuato!";\n} else {\n    cout << "Fondi insufficienti.";\n}`}
-                />
             </div>
         );
 
         const DetailDec30 = () => (
-            <div className="space-y-16 max-w-4xl mx-auto">
-                {/* Intro Section */}
-                <section className="bg-gradient-to-br from-indigo-600 to-indigo-900 p-10 sm:p-16 rounded-[3rem] text-white shadow-2xl relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-12 opacity-5">
-                        <Icon name="refresh-cw" className="h-64 w-64" />
-                    </div>
-                    <h3 className="text-3xl sm:text-5xl font-black mb-8 tracking-tight leading-tight uppercase italic">Strutture di Controllo Iterative</h3>
-                    <p className="text-indigo-100 leading-relaxed text-lg sm:text-2xl font-light">
-                        In informatica, questi tre comandi (<strong>while, do-while, for</strong>) sono chiamati Strutture di Controllo Iterative. 
-                    </p>
-                    <div className="h-px w-24 bg-indigo-400/50 my-8"></div>
-                    <p className="text-indigo-50/90 leading-relaxed text-base sm:text-xl">
-                        Quando scrivi un programma, il computer legge le righe di codice dall'alto verso il basso, una dopo l'altra. I cicli sono magici perché rompono questa regola: <strong>dicono al computer di tornare su e rileggere le stesse righe.</strong>
+            <div className="space-y-16">
+                <section className="bg-gradient-to-br from-indigo-600 to-indigo-900 p-12 rounded-[3rem] text-white relative overflow-hidden">
+                    <h3 className="text-3xl sm:text-5xl font-black mb-8 leading-tight">Mentre, Finché, Per: L'arte di Ripetere</h3>
+                    <p className="text-indigo-100 text-xl font-light max-w-3xl">
+                        In informatica, le azioni ripetitive non vengono scritte riga per riga. Usiamo strutture che dicono alla CPU: "Torna indietro finché questa condizione non cambia".
                     </p>
                 </section>
 
-                {/* Concept: The Box */}
-                <section className="bg-white p-10 sm:p-12 rounded-[2.5rem] border border-slate-200 shadow-xl relative overflow-hidden group">
-                    <div className="absolute top-0 left-0 w-2 h-full bg-amber-400 group-hover:w-4 transition-all"></div>
-                    <div className="flex items-center gap-6 mb-8">
-                        <div className="bg-amber-100 p-4 rounded-2xl text-amber-600 shadow-md"><Icon name="box" className="h-8 w-8" /></div>
-                        <h4 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Concetto preliminare: La Variabile (La Scatola)</h4>
-                    </div>
-                    <p className="text-slate-600 text-lg sm:text-xl leading-relaxed">
-                        Per capire i cicli in informatica, devi immaginare una <strong>Variabile</strong> come una scatola vuota su cui scrivi un nome (es: Contatore). Dentro questa scatola puoi mettere un numero. Durante il ciclo, il computer guarderà dentro la scatola, cambierà il numero e deciderà cosa fare in base a quel numero.
-                    </p>
-                </section>
-
-                {/* 1. WHILE */}
-                <section className="space-y-8">
-                    <div className="flex items-center gap-4">
-                        <span className="bg-slate-900 text-white w-14 h-14 rounded-2xl flex items-center justify-center text-2xl font-black shadow-xl">1</span>
-                        <div>
-                            <h4 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Il Ciclo WHILE</h4>
-                            <p className="text-indigo-600 font-black uppercase tracking-[0.3em] text-xs mt-1">Ciclo pre-condizionale</p>
-                        </div>
-                    </div>
-                    
-                    <div className="prose prose-slate max-w-none">
-                        <p className="text-slate-600 text-lg sm:text-xl leading-relaxed">
-                            In informatica, il While è la struttura più pura. Si chiama <strong>"pre-condizionale"</strong> perché il controllo avviene prima di entrare nel blocco di istruzioni.
+                <div className="space-y-12">
+                    <section className="space-y-6">
+                        <h4 className="text-2xl font-black text-slate-900 uppercase tracking-tight flex items-center gap-3">
+                            <span className="bg-slate-200 text-slate-900 w-10 h-10 rounded-xl flex items-center justify-center text-lg">1</span>
+                            Il Ciclo WHILE (Mentre)
+                        </h4>
+                        <p className="text-slate-600 text-lg leading-relaxed">
+                            È il ciclo più prudente. Il computer controlla la condizione <strong>prima</strong> di fare qualsiasi cosa. Se la condizione è già falsa all'inizio, il computer ignora tutto e prosegue. 
                         </p>
-                        
-                        <div className="logic-card bg-indigo-50/30 p-8 rounded-3xl border border-indigo-100 my-8">
-                            <h5 className="text-xs font-black uppercase text-slate-400 mb-6 tracking-widest flex items-center gap-2">
-                                <Icon name="terminal" className="h-4 w-4" /> Algoritmo Sotto il Cofano
-                            </h5>
-                            <ol className="space-y-6 text-slate-700">
-                                <li className="flex gap-4 items-start"><span className="bg-indigo-600 text-white w-6 h-6 rounded flex items-center justify-center shrink-0 text-xs font-bold">1</span> <span>Il computer arriva alla riga del <strong>while</strong>.</span></li>
-                                <li className="flex gap-4 items-start"><span className="bg-indigo-600 text-white w-6 h-6 rounded flex items-center justify-center shrink-0 text-xs font-bold">2</span> <span>Valuta la Condizione (es: Benzina &gt; 0?).</span></li>
-                                <li className="flex gap-4 items-start"><span className="bg-emerald-600 text-white w-6 h-6 rounded flex items-center justify-center shrink-0 text-xs font-bold">3</span> <span><strong>Se è VERA:</strong> Entra, esegue il codice, e poi "salta" di nuovo alla riga iniziale.</span></li>
-                                <li className="flex gap-4 items-start"><span className="bg-rose-600 text-white w-6 h-6 rounded flex items-center justify-center shrink-0 text-xs font-bold">4</span> <span><strong>Se è FALSA:</strong> Salta tutto il blocco di codice e prosegue oltre.</span></li>
-                            </ol>
+                        <div className="bg-amber-50 border-l-4 border-amber-400 p-6 rounded-r-2xl italic text-amber-900">
+                            "Mentre c'è benzina, continua a guidare." (Se la benzina è 0 all'inizio, non accendi nemmeno il motore).
                         </div>
-                    </div>
-                    
-                    <div className="bg-slate-50 p-6 rounded-2xl border-l-8 border-indigo-500 text-slate-600 italic text-base">
-                        <strong>Dettaglio Tecnico:</strong> Se il file è già scaricato (la condizione è falsa subito), il programma non perde tempo: salta direttamente a "Download completato". Il codice dentro le parentesi non viene mai toccato.
-                    </div>
+                        <CodeBlock isLarge={true} title="Esempio While" code={`int benzina = 10;\nwhile (benzina > 0) {\n    cout << "Vrum! Restano " << benzina << " litri." << endl;\n    benzina--; // Fondamentale per non finire in loop infinito!\n}`} />
+                    </section>
 
-                    <CodeBlock 
-                        isLarge={true}
-                        title="Esempio: Caricamento File"
-                        code={`// Pseudocodice\nMentre (il file NON è finito) {\n    Scarica il prossimo pezzetto di dati;\n    Aggiorna la barra di caricamento;\n}\n\nStampa "Download completato".`}
-                    />
-                </section>
-
-                {/* 2. DO-WHILE */}
-                <section className="space-y-8 pt-12 border-t border-slate-100">
-                    <div className="flex items-center gap-4">
-                        <span className="bg-slate-900 text-white w-14 h-14 rounded-2xl flex items-center justify-center text-2xl font-black shadow-xl">2</span>
-                        <div>
-                            <h4 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Il Ciclo DO-WHILE</h4>
-                            <p className="text-indigo-600 font-black uppercase tracking-[0.3em] text-xs mt-1">Ciclo post-condizionale</p>
-                        </div>
-                    </div>
-                    
-                    <p className="text-slate-600 text-lg sm:text-xl leading-relaxed">
-                        È l'opposto del While. Si chiama <strong>"post-condizionale"</strong> perché il controllo avviene alla fine. In informatica è usato meno spesso del While, ma è insostituibile in un caso specifico: l'interazione con l'utente.
-                    </p>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="p-8 bg-slate-50 rounded-3xl border border-slate-200">
-                            <h5 className="font-bold text-slate-900 mb-4 uppercase text-xs tracking-widest">Flusso Logico</h5>
-                            <ul className="space-y-4 text-sm text-slate-600">
-                                <li><strong>1.</strong> Il computer ignora i controlli ed esegue subito le istruzioni.</li>
-                                <li><strong>2.</strong> Arriva in fondo e trova il while (la condizione).</li>
-                                <li><strong>3.</strong> Se VERA: Torna su all'inizio (al do).</li>
-                                <li><strong>4.</strong> Se FALSA: Prosegue verso il basso.</li>
-                            </ul>
-                        </div>
-                        <div className="p-8 bg-indigo-900 text-white rounded-3xl shadow-lg">
-                            <h5 className="font-bold mb-4 uppercase text-xs tracking-widest text-indigo-300">Differenza Cruciale</h5>
-                            <p className="text-sm leading-relaxed">
-                                Qui il programma deve mostrare la domanda almeno una volta. Se usassimo un While normale, dovremmo scrivere il codice della domanda due volte (una fuori e una dentro il ciclo), il che in informatica è considerato "brutto codice" (ridondante).
-                            </p>
-                        </div>
-                    </div>
-
-                    <CodeBlock 
-                        isLarge={true}
-                        title="Esempio: Input Utente"
-                        code={`// Pseudocodice\nFai {\n    Scrivi "Inserisci un numero positivo:";\n    Leggi il numero inserito dall'utente;\n} Mentre (il numero è minore di 0);\n\nStampa "Bravo, hai inserito un numero corretto".`}
-                    />
-                </section>
-
-                {/* 3. FOR */}
-                <section className="space-y-8 pt-12 border-t border-slate-100">
-                    <div className="flex items-center gap-4">
-                        <span className="bg-slate-900 text-white w-14 h-14 rounded-2xl flex items-center justify-center text-2xl font-black shadow-xl">3</span>
-                        <div>
-                            <h4 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Il Ciclo FOR</h4>
-                            <p className="text-indigo-600 font-black uppercase tracking-[0.3em] text-xs mt-1">Iterazione determinata</p>
-                        </div>
-                    </div>
-                    
-                    <p className="text-slate-600 text-lg sm:text-xl leading-relaxed">
-                        Questo è il <strong>re dei cicli</strong> in informatica. Si usa quando il numero di ripetizioni è noto o calcolabile a priori (es. "fai questo per tutti gli elementi di questa lista").
-                    </p>
-                    
-                    <div className="bg-slate-900 p-8 sm:p-12 rounded-[2.5rem] text-slate-300 shadow-2xl border border-indigo-500/30">
-                        <h5 className="text-white font-black mb-8 uppercase text-xs tracking-[0.2em] text-center">Il Pacchetto "Tutto Incluso"</h5>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-                            <div className="space-y-2">
-                                <span className="text-indigo-400 font-black text-xs uppercase tracking-widest">Inizializzazione</span>
-                                <p className="text-sm">Da dove parto? <br/><code className="text-indigo-300 text-lg">i = 0</code></p>
-                            </div>
-                            <div className="space-y-2">
-                                <span className="text-indigo-400 font-black text-xs uppercase tracking-widest">Condizione</span>
-                                <p className="text-sm">Quando mi fermo? <br/><code className="text-indigo-300 text-lg">i &lt; 10</code></p>
-                            </div>
-                            <div className="space-y-2">
-                                <span className="text-indigo-400 font-black text-xs uppercase tracking-widest">Aggiornamento</span>
-                                <p className="text-sm">Come avanzo? <br/><code className="text-indigo-300 text-lg">i++</code></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="prose prose-indigo max-w-none">
-                        <h5 className="font-bold text-slate-900 mb-4">Cosa succede passo passo nella memoria del computer:</h5>
-                        <ul className="space-y-4 text-slate-600 text-lg">
-                            <li className="flex gap-4 items-start"><span className="text-indigo-600 font-black">Giro 1:</span> i è 0. È minore di 5? Sì. Invia email alla persona 0. Poi i diventa 1.</li>
-                            <li className="flex gap-4 items-start"><span className="text-indigo-600 font-black">Giro 2:</span> i è 1. È minore di 5? Sì. Invia email alla persona 1. Poi i diventa 2.</li>
-                            <li className="flex gap-4 items-start"><span className="text-rose-600 font-black">Giro 6:</span> i è 5. È minore di 5? No. Il ciclo si rompe ed esce.</li>
-                        </ul>
-                    </div>
-
-                    <CodeBlock 
-                        isLarge={true}
-                        title="Esempio: Invia Email a Lista"
-                        code={`// Pseudocodice\nPer (i = 0; i < 5; i++) {\n    Prendi l'email numero 'i';\n    Invia messaggio;\n}`}
-                    />
-                </section>
-
-                {/* Final Summary Table */}
-                <section className="bg-slate-900 text-white p-12 sm:p-16 rounded-[3rem] shadow-2xl relative overflow-hidden">
-                    <div className="absolute inset-0 bg-indigo-600 opacity-5 pointer-events-none"></div>
-                    <h4 className="text-3xl sm:text-4xl font-black mb-12 text-center uppercase tracking-widest text-indigo-400">Riepilogo Tecnico per la Scelta</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-                        <div className="p-8 bg-white/5 rounded-3xl border border-white/10 text-center hover:bg-white/10 transition-all transform hover:-translate-y-2">
-                            <Icon name="layers" className="h-12 w-12 text-indigo-400 mx-auto mb-6" />
-                            <h5 className="font-black text-xl mb-4">FOR</h5>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase mb-6 tracking-widest">Quando usarlo?</p>
-                            <p className="text-lg text-slate-100 font-medium leading-relaxed italic">"So esattamente quante volte devo farlo (es. scorrere la lista amici)."</p>
-                        </div>
-                        <div className="p-8 bg-white/5 rounded-3xl border border-white/10 text-center hover:bg-white/10 transition-all transform hover:-translate-y-2">
-                            <Icon name="message-square" className="h-12 w-12 text-emerald-400 mx-auto mb-6" />
-                            <h5 className="font-black text-xl mb-4">DO-WHILE</h5>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase mb-6 tracking-widest">Quando usarlo?</p>
-                            <p className="text-lg text-slate-100 font-medium leading-relaxed italic">"Devo farlo almeno una volta (es. Chiedere password)."</p>
-                        </div>
-                        <div className="p-8 bg-white/5 rounded-3xl border border-white/10 text-center hover:bg-white/10 transition-all transform hover:-translate-y-2">
-                            <Icon name="activity" className="h-12 w-12 text-amber-400 mx-auto mb-6" />
-                            <h5 className="font-black text-xl mb-4">WHILE</h5>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase mb-6 tracking-widest">Quando usarlo?</p>
-                            <p className="text-lg text-slate-100 font-medium leading-relaxed italic">"Potrebbe anche non servire farlo (es. muovere personaggio)."</p>
-                        </div>
-                    </div>
-                </section>
+                    <section className="space-y-6">
+                        <h4 className="text-2xl font-black text-slate-900 uppercase tracking-tight flex items-center gap-3">
+                            <span className="bg-slate-200 text-slate-900 w-10 h-10 rounded-xl flex items-center justify-center text-lg">2</span>
+                            Il Ciclo FOR (Per)
+                        </h4>
+                        <p className="text-slate-600 text-lg leading-relaxed">
+                            È il "coltellino svizzero". Lo usiamo quando sappiamo già quante volte vogliamo ripetere un'azione. È compatto perché mette inizializzazione, condizione e incremento tutto nella stessa riga.
+                        </p>
+                        <CodeBlock isLarge={true} title="Esempio For (Conteggio)" code={`// Da dove parto; Finché i < 10; Aumenta i di 1 ogni volta\nfor (int i = 0; i < 10; i++) {\n    cout << "Passo numero " << i << endl;\n}`} />
+                    </section>
+                </div>
             </div>
         );
 
+        const DetailDec27 = () => (
+            <div className="space-y-16">
+                <section className="bg-white p-10 border border-slate-200 rounded-[3rem] shadow-sm">
+                    <h3 className="text-3xl font-black text-slate-900 mb-6">Insegnare al computer a scegliere</h3>
+                    <p className="text-slate-600 text-xl leading-relaxed">
+                        Un programma senza <strong>IF</strong> è come un binario dritto. Un programma con l'IF è una rete stradale con incroci. Il computer valuta una condizione e decide quale strada prendere.
+                    </p>
+                </section>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="p-8 bg-indigo-50 rounded-3xl border border-indigo-100">
+                        <h5 className="font-black text-indigo-900 mb-4 uppercase text-xs tracking-widest">Gli Operatori di Confronto</h5>
+                        <ul className="space-y-3 text-indigo-800 text-lg">
+                            <li><strong>==</strong> Uguale</li>
+                            <li><strong>!=</strong> Diverso</li>
+                            <li><strong>&gt; / &lt;</strong> Maggiore / Minore</li>
+                            <li><strong>&gt;= / &lt;=</strong> Maggiore o Uguale...</li>
+                        </ul>
+                    </div>
+                    <div className="p-8 bg-slate-900 rounded-3xl text-white shadow-xl">
+                        <h5 className="font-black text-indigo-400 mb-4 uppercase text-xs tracking-widest">Logica Booleana</h5>
+                        <p className="text-slate-300 leading-relaxed">Tutto si riduce a <strong>Vero (1)</strong> o <strong>Falso (0)</strong>. Non ci sono zone grigie per la CPU.</p>
+                    </div>
+                </div>
+
+                <CodeBlock isLarge={true} title="Esempio If-Else-If" code={`int gradi = 25;\n\nif (gradi > 30) {\n    cout << "Fa molto caldo";\n} else if (gradi >= 20) {\n    cout << "Si sta bene";\n} else {\n    cout << "Fa freschetto";\n}`} />
+            </div>
+        );
+
+        const DetailDec22 = () => (
+            <div className="space-y-16">
+                <section className="bg-slate-900 p-16 rounded-[4rem] text-white text-center">
+                    <h3 className="text-4xl sm:text-6xl font-black mb-8 leading-tight italic">Giorno 1: Benvenuto in C++</h3>
+                    <p className="text-indigo-300 text-2xl font-light">
+                        Abbiamo trasformato il computer da un elettrodomestico passivo a un servitore che esegue ordini.
+                    </p>
+                </section>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div className="p-8 bg-white border border-slate-200 rounded-3xl text-center">
+                        <Icon name="box" className="h-10 w-10 text-indigo-600 mx-auto mb-4" />
+                        <h5 className="font-bold text-slate-900 mb-2">Variabili</h5>
+                        <p className="text-sm text-slate-500 italic">Etichette sulla RAM per conservare i dati.</p>
+                    </div>
+                    <div className="p-8 bg-white border border-slate-200 rounded-3xl text-center">
+                        <Icon name="type" className="h-10 w-10 text-indigo-600 mx-auto mb-4" />
+                        <h5 className="font-bold text-slate-900 mb-2">Tipi di Dato</h5>
+                        <p className="text-sm text-slate-500 italic">int (numeri), string (testi), char (lettere).</p>
+                    </div>
+                    <div className="p-8 bg-white border border-slate-200 rounded-3xl text-center">
+                        <Icon name="terminal" className="h-10 w-10 text-indigo-600 mx-auto mb-4" />
+                        <h5 className="font-bold text-slate-900 mb-2">I/O</h5>
+                        <p className="text-sm text-slate-500 italic">cout (stampa), cin (leggi input).</p>
+                    </div>
+                </div>
+
+                <CodeBlock isLarge={true} title="Il Primo Programma" code={`#include <iostream>\nusing namespace std;\n\nint main() {\n    int eta;\n    cout << "Quanti anni hai? ";\n    cin >> eta; // Riceve l'input dalla tastiera\n    cout << "Hai inserito: " << eta << endl;\n    return 0;\n}`} />
+            </div>
+        );
+
+        const QuizSection = () => {
+            const [results, setResults] = useState({});
+            
+            const quizData = [
+                { q: "Il ciclo while controlla la condizione alla fine.", a: false, e: "Il while è pre-condizionale, controlla all'inizio." },
+                { q: "Il ciclo do-while viene eseguito almeno una volta.", a: true, e: "Essendo post-condizionale, il primo giro è garantito." },
+                { q: "Un ciclo for(;;){} è un errore di sintassi.", a: false, e: "È un ciclo infinito valido (sebbene sconsigliato)." },
+                { q: "L'incremento i++ aumenta il valore di i di 1.", a: true, e: "È l'operatore di post-incremento standard." },
+                { q: "Si può usare un break per uscire da un ciclo.", a: true, e: "Il comando break interrompe immediatamente l'iterazione." },
+                { q: "Un ciclo for può contenere un altro ciclo for.", a: true, e: "Si chiamano cicli annidati o nested loops." },
+                { q: "La variabile di controllo del for deve chiamarsi per forza 'i'.", a: false, e: "Puoi usare qualsiasi nome di variabile valido." },
+                { q: "Il ciclo while(0) non verrà mai eseguito.", a: true, e: "In C++, 0 equivale a false." },
+                { q: "Il do-while richiede un punto e virgola dopo la condizione.", a: true, e: "Sì: do { ... } while (cond); " },
+                { q: "Un ciclo infinito blocca sempre il computer.", a: false, e: "Occupa solo il 100% della CPU dedicata a quel processo." },
+                { q: "i-- è l'equivalente di i = i - 1.", a: true, e: "Esatto, è il decremento unitario." },
+                { q: "Nella riga for(init; cond; incr), 'init' viene eseguito a ogni giro.", a: false, e: "L'inizializzazione viene eseguita una sola volta all'inizio." },
+                { q: "Un ciclo for è perfetto quando conosciamo il numero di iterazioni.", a: true, e: "È la sua funzione principale." },
+                { q: "In un ciclo while, se la condizione è falsa all'inizio, il corpo è saltato.", a: true, e: "Corretto, essendo pre-condizionale." },
+                { q: "È impossibile usare un if dentro un for.", a: false, e: "È comunissimo usare logica condizionale nei cicli." },
+                { q: "Il comando continue salta al giro successivo del ciclo.", a: true, e: "Interrompe il giro attuale e riparte dal controllo/incremento." },
+                { q: "while(true) crea un ciclo che non finisce mai da solo.", a: true, e: "Vero, a meno di un break interno." },
+                { q: "Il C++ non supporta il ciclo do-while.", a: false, e: "Lo supporta ed è utilissimo per i menu." },
+                { q: "Un ciclo for può contare all'indietro.", a: true, e: "Basta usare i-- e una condizione come i >= 0." },
+                { q: "L'inizializzazione del for può essere fatta fuori dal ciclo.", a: true, e: "Sì, for(; i < 10; i++)." },
+                { q: "La condizione del while deve essere tra parentesi tonde.", a: true, e: "Sì, è obbligatorio in C++." },
+                { q: "Si può usare una variabile float come contatore nel for.", a: true, e: "Tecnicamente possibile, ma rischioso per la precisione." },
+                { q: "Il corpo di un ciclo deve essere sempre tra graffe {}.", a: false, e: "Se c'è una sola istruzione, le graffe sono opzionali." },
+                { q: "while(x = 5) è un errore comune che crea un ciclo infinito.", a: true, e: "Assegna 5 a x, e 5 è considerato true." },
+                { q: "I cicli annidati rallentano drasticamente il programma se troppi.", a: true, e: "La complessità aumenta in modo esponenziale (N*M)." },
+                { q: "Un ciclo può non avere fine se la condizione non cambia mai.", a: true, e: "È la definizione di loop infinito accidentale." },
+                { q: "La variabile definita nel for: for(int i=0...) non esiste fuori dal ciclo.", a: true, e: "Vero, ha uno scope limitato al blocco del ciclo." },
+                { q: "do{...}while(cond) richiede che cond sia booleana.", a: true, e: "O un valore convertibile in booleano (come int)." },
+                { q: "Il ciclo for è più veloce del while.", a: false, e: "Hanno prestazioni identiche a livello di compilazione." },
+                { q: "Tutti i cicli possono essere convertiti l'uno nell'altro.", a: true, e: "Qualsiasi for può diventare un while e viceversa." }
+            ];
+
+            const handleAnswer = (index, choice) => {
+                if (results[index] !== undefined) return;
+                setResults({ ...results, [index]: choice === quizData[index].a });
+            };
+
+            return (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {quizData.map((item, i) => (
+                        <div key={i} className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                            <p className="text-sm font-bold text-slate-800 mb-3">{i+1}. {item.q}</p>
+                            <div className="flex gap-2 mb-2">
+                                <button 
+                                    onClick={() => handleAnswer(i, true)}
+                                    className={`px-4 py-1.5 rounded-lg text-xs font-black uppercase transition-all ${results[i] === undefined ? 'bg-slate-100 hover:bg-emerald-100 text-slate-600' : (item.a ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-300')}`}
+                                >Vero</button>
+                                <button 
+                                    onClick={() => handleAnswer(i, false)}
+                                    className={`px-4 py-1.5 rounded-lg text-xs font-black uppercase transition-all ${results[i] === undefined ? 'bg-slate-100 hover:bg-rose-100 text-slate-600' : (!item.a ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-300')}`}
+                                >Falso</button>
+                            </div>
+                            {results[i] !== undefined && (
+                                <p className={`text-[10px] p-2 rounded-lg leading-tight font-medium ${results[i] ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>
+                                    {results[i] ? 'Corretto! ' : 'Sbagliato. '} {item.e}
+                                </p>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        const CodingExercise = ({ ex }) => {
+            const [show, setShow] = useState(false);
+            return (
+                <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+                    <h4 className="text-lg font-black text-slate-900 mb-2 uppercase tracking-tight">{ex.title}</h4>
+                    <p className="text-sm text-slate-600 mb-4">{ex.description}</p>
+                    <div className="bg-indigo-50 p-4 rounded-xl mb-4">
+                        <p className="text-[10px] font-black uppercase text-indigo-400 mb-1">Pseudocodice</p>
+                        <p className="text-xs font-mono text-indigo-900 whitespace-pre-wrap italic">{ex.pseudocode}</p>
+                    </div>
+                    <div className="bg-slate-50 p-4 rounded-xl mb-6">
+                        <p className="text-[10px] font-black uppercase text-slate-400 mb-1">Spiegazione della logica</p>
+                        <p className="text-xs text-slate-600 leading-relaxed">{ex.explanation}</p>
+                    </div>
+                    <button 
+                        onClick={() => setShow(!show)}
+                        className="w-full py-3 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2"
+                    >
+                        <Icon name={show ? "eye-off" : "eye"} className="h-4 w-4" />
+                        {show ? "Nascondi Soluzione" : "Mostra Codice C++"}
+                    </button>
+                    {show && (
+                        <div className="mt-4 animate-fade-in">
+                            <CodeBlock title="Soluzione Corretta" code={ex.code} isLarge={true} />
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const HomeworkView = () => {
+            const exercises = [
+                {
+                    title: "1. Stampa i numeri da 1 a 10",
+                    description: "Usa un ciclo for per mostrare a video i numeri in sequenza.",
+                    pseudocode: "Per i da 1 a 10:\n  Stampa i",
+                    explanation: "Inizializziamo i a 1, continuiamo finché i è minore o uguale a 10, incrementiamo di 1 a ogni passo.",
+                    code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    for(int i = 1; i <= 10; i++) {\n        cout << i << \" \";\n    }\n    return 0;\n}"
+                },
+                {
+                    title: "2. Numeri Pari da 20 a 2",
+                    description: "Usa un ciclo for che conta all'indietro.",
+                    pseudocode: "Per i da 20 a 2 (decremento di 2):\n  Stampa i",
+                    explanation: "Partiamo da 20, la condizione è i >= 2, e l'aggiornamento è i -= 2 per saltare i numeri dispari.",
+                    code: "for(int i = 20; i >= 2; i -= 2) {\n    cout << i << \" \";\n}"
+                },
+                {
+                    title: "3. La Somma dei primi N numeri",
+                    description: "L'utente inserisce N, tu calcoli la somma di tutti i numeri da 1 a N.",
+                    pseudocode: "Leggi N\nSomma = 0\nPer i da 1 a N:\n  Somma = Somma + i\nStampa Somma",
+                    explanation: "Usiamo una variabile 'accumulatore' (Somma) che si aggiorna a ogni giro del ciclo.",
+                    code: "int n, somma = 0;\ncin >> n;\nfor(int i = 1; i <= n; i++) {\n    somma += i;\n}\ncout << somma;"
+                },
+                {
+                    title: "4. Validazione password numerica",
+                    description: "Chiedi il PIN (1234) finché l'utente non lo indovina.",
+                    pseudocode: "Fai:\n  Chiedi PIN\nMentre (PIN diverso da 1234)",
+                    explanation: "Il do-while è perfetto perché dobbiamo chiedere il PIN almeno una volta.",
+                    code: "int pin;\ndo {\n    cout << \"Inserisci PIN: \";\n    cin >> pin;\n} while (pin != 1234);\ncout << \"Accesso garantito!\";"
+                },
+                {
+                    title: "5. Tabellina di un numero",
+                    description: "L'utente inserisce un numero e il programma stampa la sua tabellina fino a 10.",
+                    pseudocode: "Leggi num\nPer i da 1 a 10:\n  Stampa num * i",
+                    explanation: "Un classico for che moltiplica la variabile fissa 'num' per il contatore 'i'.",
+                    code: "int num;\ncin >> num;\nfor(int i = 1; i <= 10; i++) {\n    cout << num << \" x \" << i << \" = \" << num*i << endl;\n}"
+                },
+                {
+                    title: "6. Media di 5 voti",
+                    description: "Chiedi 5 voti all'utente e calcola la media decimale.",
+                    pseudocode: "Somma = 0\nPer i da 1 a 5:\n  Leggi voto\n  Somma = Somma + voto\nMedia = Somma / 5.0\nStampa Media",
+                    explanation: "Fondamentale usare un float per la media per non perdere i decimali.",
+                    code: "float voto, somma = 0;\nfor(int i=0; i<5; i++) {\n    cin >> voto;\n    somma += voto;\n}\ncout << \"Media: \" << somma/5.0;"
+                },
+                {
+                    title: "7. Fattoriale di un numero",
+                    description: "Calcola il prodotto di tutti i numeri da 1 a N.",
+                    pseudocode: "Leggi N\nFatt = 1\nPer i da 1 a N:\n  Fatt = Fatt * i\nStampa Fatt",
+                    explanation: "Simile alla somma, ma usiamo la moltiplicazione. Attenzione: fattoriale di 0 è 1.",
+                    code: "int n; long long fatt = 1;\ncin >> n;\nfor(int i = 1; i <= n; i++) {\n    fatt *= i;\n}\ncout << fatt;"
+                },
+                {
+                    title: "8. Quadrato di Asterischi",
+                    description: "Inserisci un lato L e stampa un quadrato pieno di '*'.",
+                    pseudocode: "Per i da 1 a L:\n  Per j da 1 a L:\n    Stampa '*'\n  Stampa a capo",
+                    explanation: "Esempio di cicli annidati: il ciclo esterno gestisce le righe, quello interno le colonne.",
+                    code: "int L;\ncin >> L;\nfor(int i=0; i<L; i++) {\n    for(int j=0; j<L; j++) cout << \"*\";\n    cout << endl;\n}"
+                },
+                {
+                    title: "9. Conteggio cifre di un numero",
+                    description: "Dato un numero, dì da quante cifre è composto (es: 150 -> 3).",
+                    pseudocode: "Leggi num\nCont = 0\nMentre num > 0:\n  num = num / 10\n  Cont++\nStampa Cont",
+                    explanation: "Usiamo la divisione intera per rimuovere l'ultima cifra a ogni giro finché il numero sparisce.",
+                    code: "int num, cont = 0;\ncin >> num;\nif(num == 0) cont = 1;\nwhile(num > 0) {\n    num /= 10;\n    cont++;\n}\ncout << cont;"
+                },
+                {
+                    title: "10. Indovina il Numero Magico",
+                    description: "Il programma sceglie 7. L'utente ha tentativi infiniti.",
+                    pseudocode: "Fai:\n  Leggi tentativo\n  Se tentativo < 7: Stampa 'Troppo basso'\n  Se tentativo > 7: Stampa 'Troppo alto'\nMentre tentativo diverso da 7",
+                    explanation: "Uniamo un do-while a degli if interni per dare feedback all'utente.",
+                    code: "int t;\ndo {\n    cin >> t;\n    if(t < 7) cout << \"Piu' alto!\" << endl;\n    if(t > 7) cout << \"Piu' basso!\" << endl;\n} while(t != 7);\ncout << \"Indovinato!\";"
+                }
+            ];
+
+            return (
+                <div className="space-y-12 animate-fade-in">
+                    <section>
+                        <h3 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-2 uppercase tracking-tight">
+                            <Icon name="help-circle" className="text-indigo-600" /> Quiz Interattivo (Vero/Falso)
+                        </h3>
+                        <QuizSection />
+                    </section>
+                    
+                    <section>
+                        <h3 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-2 uppercase tracking-tight">
+                            <Icon name="code" className="text-indigo-600" /> Esercizi di Sviluppo
+                        </h3>
+                        <div className="grid grid-cols-1 gap-6">
+                            {exercises.map((ex, i) => <CodingExercise key={i} ex={ex} />)}
+                        </div>
+                    </section>
+                </div>
+            );
+        };
+
         const LessonDetail = ({ id, onBack }) => {
+            const renderContent = () => {
+                switch(id) {
+                    case 'jan-3-5': return <DetailJan3_5 />;
+                    case 'dec-30': return <DetailDec30 />;
+                    case 'dec-27': return <DetailDec27 />;
+                    case 'dec-22': return <DetailDec22 />;
+                    default: return <p>Report non trovato.</p>;
+                }
+            };
+
             return (
                 <div className="animate-fade-in max-w-5xl mx-auto pb-12">
                     <button onClick={onBack} className="flex items-center gap-2 text-slate-500 font-bold mb-8 hover:text-indigo-600 transition-colors bg-white px-6 py-3 rounded-2xl border border-slate-200 shadow-sm text-sm uppercase tracking-widest">
@@ -389,17 +528,15 @@
                             </div>
                             <div className="flex items-center gap-3 mb-6">
                                 <span className="bg-indigo-600 text-[10px] font-black uppercase px-3 py-1.5 rounded-lg tracking-wider shadow-lg">Mentoring Report</span>
-                                <span className="text-slate-400 text-sm font-black uppercase tracking-widest">{id === 'dec-30' ? '30 Dicembre' : id === 'dec-27' ? '27 Dicembre' : '22 Dicembre'} 2024</span>
+                                <span className="text-slate-400 text-sm font-black uppercase tracking-widest">Lezione Completata</span>
                             </div>
                             <h2 className="text-4xl sm:text-6xl font-black tracking-tight max-w-4xl leading-tight">
-                                {id === 'dec-30' ? 'Interazioni e Cicli (for, while)' : 
-                                 id === 'dec-27' ? 'Logica delle Decisioni in C++' : 'Fondamenti & I/O'}
+                                {SYLLABUS_DATA.find(l => l.id === id)?.title}
                             </h2>
                         </div>
 
                         <div className="p-8 sm:p-16">
-                            {id === 'dec-30' ? <DetailDec30 /> : 
-                             id === 'dec-27' ? <DetailDec27 /> : <DetailDec22 />}
+                            {renderContent()}
                         </div>
                     </div>
                 </div>
@@ -407,7 +544,15 @@
         };
 
         const Dashboard = () => {
-            const completedCount = 3;
+            const completedCount = 5;
+            const topics = [
+                { title: "Fondamenti C++", desc: "Variabili, Tipi di dato, RAM", icon: "box" },
+                { title: "Input/Output", desc: "cin, cout, flussi dati", icon: "terminal" },
+                { title: "Controlli If-Else", desc: "Decisioni, logica Booleana", icon: "git-branch" },
+                { title: "Iterazioni For", desc: "Cicli determinati, contatori", icon: "refresh-cw" },
+                { title: "While & Do-While", desc: "Cicli condizionali, validazione", icon: "rotate-cw" },
+                { title: "Logica Avanzata", desc: "Cicli annidati, risoluzione problemi", icon: "zap" }
+            ];
 
             return (
                 <div className="space-y-6 sm:space-y-8 animate-fade-in">
@@ -432,35 +577,32 @@
                             </div>
                             <div>
                                 <p className="text-[10px] font-black text-indigo-200 uppercase tracking-[0.2em] mb-1 sm:mb-2 text-indigo-100">Prossimo Incontro</p>
-                                <h3 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight">Da definire</h3>
-                                <p className="text-indigo-100 mt-2 text-sm font-medium flex items-center gap-2 italic">
-                                   Verificare la disponibilità nel calendario didattico.
+                                <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight leading-tight">Giovedì 8 Gennaio 2025</h3>
+                                <p className="text-indigo-100 mt-2 text-sm font-medium flex items-center gap-2">
+                                   <Icon name="clock" className="h-4 w-4" /> Ore 17:30
                                 </p>
                             </div>
                             <div className="mt-4 sm:mt-6 flex gap-2">
-                                <span className="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-bold text-white uppercase tracking-wider">TBD (To Be Defined)</span>
+                                <span className="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-bold text-white uppercase tracking-wider">Sessione Programmata</span>
                             </div>
                         </div>
                     </div>
 
                     <div className="bg-white p-6 sm:p-10 rounded-2xl sm:rounded-[2rem] border border-slate-200 shadow-sm relative group">
-                        <div className="flex justify-between items-center mb-6 sm:mb-10">
-                            <div>
-                                <h2 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">Focus Attività Formativa</h2>
-                                <p className="text-[10px] text-slate-400 font-bold uppercase mt-1 tracking-widest">Saturazione mensile</p>
-                            </div>
-                            <div className="bg-indigo-50 px-3 py-1.5 rounded-xl border border-indigo-100 flex items-center gap-2">
-                                <div className="h-2 w-2 rounded-full bg-indigo-500 animate-pulse"></div>
-                                <span className="text-[9px] sm:text-[10px] font-black text-indigo-600 uppercase tracking-widest">Live Updates</span>
-                            </div>
+                        <div className="mb-8">
+                            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Argomenti Trattati</h2>
+                            <p className="text-[10px] text-slate-400 font-bold uppercase mt-1 tracking-widest">Panoramica delle competenze acquisite</p>
                         </div>
-                        <div className="flex items-end gap-4 sm:gap-8 h-36 sm:h-48 pt-4">
-                            {['Ott', 'Nov', 'Dic', 'Gen'].map((m, i) => (
-                                <div key={i} className="flex-1 flex flex-col items-center gap-4">
-                                    <div className="w-full bg-slate-50 rounded-2xl relative group/bar h-full border border-slate-100 overflow-hidden shadow-inner">
-                                        <div className={`absolute bottom-0 w-full rounded-2xl transition-all duration-1000 ${m === 'Dic' ? 'bg-indigo-500 shadow-lg shadow-indigo-500/40' : 'bg-slate-200'}`} style={{height: m === 'Dic' ? '75%' : '5%'}}></div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                            {topics.map((t, idx) => (
+                                <div key={idx} className="p-5 bg-slate-50 rounded-2xl border border-slate-100 flex items-start gap-4 hover:bg-indigo-50 transition-colors group/topic">
+                                    <div className="bg-white p-2.5 rounded-xl shadow-sm group-hover/topic:bg-indigo-600 group-hover/topic:text-white transition-colors">
+                                        <Icon name={t.icon} className="h-5 w-5" />
                                     </div>
-                                    <span className={`text-[10px] font-black uppercase tracking-widest ${m === 'Dic' ? 'text-indigo-600' : 'text-slate-400'}`}>{m}</span>
+                                    <div>
+                                        <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight">{t.title}</h4>
+                                        <p className="text-xs text-slate-500 mt-1 font-medium">{t.desc}</p>
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -525,22 +667,15 @@
                                     <button onClick={() => handleTabChange('syll')} className={`px-10 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 tab-transition ${tab === 'syll' ? 'bg-white text-indigo-600 shadow-xl shadow-slate-200' : 'text-slate-500 hover:text-slate-700'}`}>
                                         <Icon name="list" className="h-4 w-4" /> Piano Didattico
                                     </button>
+                                    <button onClick={() => handleTabChange('homework')} className={`px-10 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 tab-transition ${tab === 'homework' ? 'bg-white text-indigo-600 shadow-xl shadow-slate-200' : 'text-slate-500 hover:text-slate-700'}`}>
+                                        <Icon name="edit-3" className="h-4 w-4" /> Compiti
+                                    </button>
                                 </div>
 
-                                {tab === 'dash' ? <Dashboard /> : (
+                                {tab === 'dash' && <Dashboard />}
+                                
+                                {tab === 'syll' && (
                                     <div className="space-y-8 animate-fade-in max-w-4xl">
-                                        <div className="bg-indigo-600 rounded-[2rem] p-8 flex flex-col md:flex-row gap-6 items-center shadow-2xl shadow-indigo-100">
-                                            <div className="bg-white/10 p-4 rounded-2xl shadow-inner">
-                                                <Icon name="award" className="h-10 w-10 text-white" />
-                                            </div>
-                                            <div className="text-center md:text-left">
-                                                <p className="text-xs font-bold text-indigo-100 uppercase tracking-[0.2em] mb-1">Obiettivo Raggiunto</p>
-                                                <p className="text-white text-sm sm:text-base font-medium leading-relaxed">
-                                                    Abbiamo concluso con successo il modulo sulle <strong>iterazioni</strong>. Il percorso prosegue verso la gestione della memoria.
-                                                </p>
-                                            </div>
-                                        </div>
-
                                         <div className="grid grid-cols-1 gap-6">
                                             {sortedSyllabus.map(l => (
                                                 <div key={l.id} className={`lesson-card bg-white border rounded-[2rem] p-6 sm:p-10 transition-all duration-300 shadow-sm border-slate-200`}>
@@ -575,6 +710,8 @@
                                         </div>
                                     </div>
                                 )}
+
+                                {tab === 'homework' && <HomeworkView />}
                             </>
                         )}
                     </main>
@@ -591,11 +728,6 @@
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] text-center">
                                 Portale Mentoring &copy; {new Date().getFullYear()} — Made with focus
                             </p>
-                            <div className="flex gap-4">
-                                <div className="h-2 w-2 rounded-full bg-indigo-500"></div>
-                                <div className="h-2 w-2 rounded-full bg-slate-100"></div>
-                                <div className="h-2 w-2 rounded-full bg-slate-100"></div>
-                            </div>
                         </div>
                     </footer>
                 </div>
